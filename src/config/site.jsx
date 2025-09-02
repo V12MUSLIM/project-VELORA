@@ -1,5 +1,3 @@
-export type SiteConfig = typeof siteConfig;
-
 export const siteConfig = {
   name: "Velora",
   description: "Your premium online shopping destination for quality products.",

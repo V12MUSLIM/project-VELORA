@@ -6,7 +6,7 @@
   "homepage": "https://V12MUSLIM.github.io/project-VELORA",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "lint": "eslint --fix",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -44,11 +44,6 @@
     "@eslint/compat": "1.2.8",
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.25.1",
-    "@types/node": "20.5.7",
-    "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0",
-    "@typescript-eslint/eslint-plugin": "8.31.1",
-    "@typescript-eslint/parser": "8.31.1",
     "@vitejs/plugin-react": "4.7.0",
     "eslint": "9.25.1",
     "eslint-config-prettier": "9.1.0",
@@ -63,8 +58,6 @@
     "globals": "16.0.0",
     "postcss": "8.5.6",
     "prettier": "3.5.3",
-    "typescript": "5.6.3",
-    "vite": "6.0.11",
-    "vite-tsconfig-paths": "5.1.4"
+    "vite": "6.0.11"
   }
 }

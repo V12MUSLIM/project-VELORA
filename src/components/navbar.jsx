@@ -1,8 +1,4 @@
-import { Button } from "@heroui/button";
-import { Badge } from "@heroui/badge";
-import { Kbd } from "@heroui/kbd";
-import { Link } from "@heroui/link";
-import { Input } from "@heroui/input";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Navbar as HeroUINavbar,
   NavbarBrand,
@@ -12,15 +8,20 @@ import {
   NavbarMenu,
   NavbarMenuItem,
 } from "@heroui/navbar";
+import { Button } from "@heroui/button";
+import { Badge } from "@heroui/badge";
+import { Kbd } from "@heroui/kbd";
+import { Input } from "@heroui/input";
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import { TwitterIcon, SearchIcon, ShoppingCartIcon } from "@/components/icons";
-import { Logo } from "@/components/icons";
+import { siteConfig } from "../config/site";
+import { ThemeSwitch } from "./theme-switch";
+import { TwitterIcon, SearchIcon, ShoppingCartIcon, Logo } from "./icons";
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+
   const searchInput = (
     <Input
       aria-label="Search"
@@ -64,19 +65,13 @@ export const Navbar = () => {
       {/* Left Section */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
-          <Link
-            className="flex justify-start items-center gap-1"
-            color="foreground"
-            href="/"
-          >
+          <Link className="flex justify-start items-center gap-1" to="/">
             <Logo />
-            <p className="font-bold text-white">
-              VELORA
-            </p>
+            <p className="font-bold">VELORA</p>
           </Link>
         </NavbarBrand>
 
-        {/* Desktop Navigation Links (visible on desktop) */}
+        {/* Desktop Navigation Links */}
         <div className="hidden lg:flex gap-4 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
@@ -85,14 +80,7 @@ export const Navbar = () => {
                   linkStyles({ color: "foreground" }),
                   "data-[active=true]:text-primary data-[active=true]:font-medium"
                 )}
-                color="foreground"
-                href={item.href}
-                aria-current={
-                  typeof window !== "undefined" &&
-                  window.location.pathname === item.href
-                    ? "page"
-                    : undefined
-                }
+                to={item.href}
               >
                 {item.label}
               </Link>
@@ -101,13 +89,13 @@ export const Navbar = () => {
         </div>
       </NavbarContent>
 
-      {/* Desktop Right Section (visible on desktop) */}
+      {/* Desktop Right Section */}
       <NavbarContent
         className="hidden lg:flex basis-1/5 sm:basis-full"
         justify="end"
       >
         <NavbarItem className="flex gap-4 items-center">
-          <Link isExternal href={siteConfig.links.twitter} title="Twitter">
+          <Link to={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer">
             <TwitterIcon className="text-default-500" />
           </Link>
           <Badge content="3" color="primary" size="md" placement="top-right">
@@ -117,6 +105,7 @@ export const Navbar = () => {
               className="text-default-500"
               size="sm"
               variant="light"
+              onClick={() => navigate("/cart")}
             >
               <ShoppingCartIcon size={18} />
             </Button>
@@ -126,7 +115,7 @@ export const Navbar = () => {
         <NavbarItem className="flex">{searchInput}</NavbarItem>
       </NavbarContent>
 
-      {/* Mobile & Tablet Right Section (visible on mobile and tablet) */}
+      {/* Mobile Right Section */}
       <NavbarContent className="flex lg:hidden basis-1 pl-4" justify="end">
         <Badge content="3" color="primary" size="md" placement="top-right">
           <Button
@@ -135,6 +124,7 @@ export const Navbar = () => {
             className="text-default-500"
             size="sm"
             variant="light"
+            onClick={() => navigate("/cart")}
           >
             <ShoppingCartIcon size={18} />
           </Button>
@@ -143,33 +133,22 @@ export const Navbar = () => {
         <NavbarMenuToggle />
       </NavbarContent>
 
-      {/* Mobile Menu (for mobile and tablet) */}
+      {/* Mobile Menu */}
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-4">
-          {/* Search Input for Mobile/Tablet */}
-          <div className="flex flex-col gap-2">
-            {mobileSearchInput}
-          </div>
-          
-          {/* Navigation Menu Items */}
+          <div className="flex flex-col gap-2">{mobileSearchInput}</div>
+
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
-                color={
+                to={item.href}
+                className={clsx(
                   index === 2
-                    ? "primary"
+                    ? "text-primary"
                     : index === siteConfig.navMenuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                href={item.href || "#"}
-                size="lg"
-                aria-current={
-                  typeof window !== "undefined" &&
-                  window.location.pathname === item.href
-                    ? "page"
-                    : undefined
-                }
+                    ? "text-danger"
+                    : "text-foreground"
+                )}
               >
                 {item.label}
               </Link>

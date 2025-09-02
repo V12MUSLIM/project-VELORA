@@ -2,8 +2,9 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
-import BentoGrid from "@/components/bentoGrid"; // Make sure this points to your TypeScript version
-import DefaultLayout from "@/layouts/default";
+
+import BentoGrid from "../components/bentoGrid.jsx";
+import DefaultLayout from "../layouts/default.jsx";
 
 export default function IndexPage() {
   const featuredProducts = [
