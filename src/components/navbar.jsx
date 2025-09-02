@@ -65,9 +65,9 @@ export const Navbar = () => {
       {/* Left Section */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
-          <Link className="flex justify-start items-center gap-1" to="/">
+          <Link className="flex justify-start items-center gap-1" to="/project-VELORA/">
             <Logo />
-            <p className="font-bold">VELORA</p>
+           <p className="font-bold text-foreground">VELORA</p>
           </Link>
         </NavbarBrand>
 
@@ -80,7 +80,7 @@ export const Navbar = () => {
                   linkStyles({ color: "foreground" }),
                   "data-[active=true]:text-primary data-[active=true]:font-medium"
                 )}
-                to={item.href}
+                to={`/project-VELORA${item.href}`}
               >
                 {item.label}
               </Link>
@@ -95,9 +95,9 @@ export const Navbar = () => {
         justify="end"
       >
         <NavbarItem className="flex gap-4 items-center">
-          <Link to={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer">
+          <a href={siteConfig.links.twitter} target="_blank" rel="noopener noreferrer">
             <TwitterIcon className="text-default-500" />
-          </Link>
+          </a>
           <Badge content="3" color="primary" size="md" placement="top-right">
             <Button
               isIconOnly
@@ -105,7 +105,7 @@ export const Navbar = () => {
               className="text-default-500"
               size="sm"
               variant="light"
-              onClick={() => navigate("/cart")}
+              onClick={() => navigate("/project-VELORA/cart")}
             >
               <ShoppingCartIcon size={18} />
             </Button>
@@ -124,7 +124,7 @@ export const Navbar = () => {
             className="text-default-500"
             size="sm"
             variant="light"
-            onClick={() => navigate("/cart")}
+            onClick={() => navigate("/project-VELORA/cart")}
           >
             <ShoppingCartIcon size={18} />
           </Button>
@@ -136,12 +136,13 @@ export const Navbar = () => {
       {/* Mobile Menu */}
       <NavbarMenu>
         <div className="mx-4 mt-2 flex flex-col gap-4">
+          {/* Search Bar in Mobile */}
           <div className="flex flex-col gap-2">{mobileSearchInput}</div>
 
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
-                to={item.href}
+                to={`/project-VELORA${item.href}`}
                 className={clsx(
                   index === 2
                     ? "text-primary"
