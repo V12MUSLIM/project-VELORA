@@ -42,6 +42,23 @@ export const Navbar = () => {
     />
   );
 
+  const mobileSearchInput = (
+    <Input
+      aria-label="Search"
+      classNames={{
+        inputWrapper: "bg-default-100",
+        input: "text-sm",
+      }}
+      labelPlacement="outside"
+      placeholder="Search products..."
+      startContent={
+        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
+      }
+      type="search"
+      size="sm"
+    />
+  );
+
   return (
     <HeroUINavbar maxWidth="xl" position="sticky">
       {/* Left Section */}
@@ -128,7 +145,13 @@ export const Navbar = () => {
 
       {/* Mobile Menu (for mobile and tablet) */}
       <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
+        <div className="mx-4 mt-2 flex flex-col gap-4">
+          {/* Search Input for Mobile/Tablet */}
+          <div className="flex flex-col gap-2">
+            {mobileSearchInput}
+          </div>
+          
+          {/* Navigation Menu Items */}
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link

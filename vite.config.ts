@@ -6,5 +6,5 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths(), tailwindcss()],
-  base: process.env.NODE_ENV === 'production' ? '/project-VELORA/' : '/'
+  base: "/project-VELORA/", // ده اللي بيخلي الـ assets تتحط في المسار الصح
 });

@@ -62,7 +62,7 @@ export default function IndexPage() {
                 className="w-full max-w-3xl mx-auto rounded-2xl shadow-2xl"
               >
                 <source
-                  src="/Minimalist_Logo_Animation_Generation.mp4"
+                  src={`${import.meta.env.BASE_URL}Minimalist_Logo_Animation_Generation.mp4`} 
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
