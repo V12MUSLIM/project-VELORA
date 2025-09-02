@@ -2,7 +2,7 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
-
+import BentoGrid from "@/components/bentoGrid"; // Make sure this points to your TypeScript version
 import DefaultLayout from "@/layouts/default";
 
 export default function IndexPage() {
@@ -51,8 +51,7 @@ export default function IndexPage() {
   return (
     <DefaultLayout>
       {/* Hero Section */}
-      {/* Hero Section - Clean Transparent Look */}
-      <section className="min-h-screen flex items-center justify-center relative overflow-hidden bg-transparent">
+      <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-transparent">
         <div className="container mx-auto px-6 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
             <div className="mb-12">
@@ -69,9 +68,9 @@ export default function IndexPage() {
                 Your browser does not support the video tag.
               </video>
             </div>
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
+            <h1 className="font-playfair text-6xl md:text-8xl font-bold mb-6 tracking-tight">
               <span className="bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
-                Velora
+                VELORA
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-foreground/70 mb-8 max-w-2xl mx-auto">
@@ -114,6 +113,11 @@ export default function IndexPage() {
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* BentoGrid Section - Now properly positioned */}
+        <div className="w-full mt-20">
+          <BentoGrid />
         </div>
       </section>
 

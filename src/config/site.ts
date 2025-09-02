@@ -1,24 +1,24 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Vite + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Velora",
+  description: "Your premium online shopping destination for quality products.",
   navItems: [
     {
       label: "Home",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Shop",
+      href: "/shop",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Categories",
+      href: "/categories",
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "Deals",
+      href: "/deals",
     },
     {
       label: "About",
@@ -27,32 +27,40 @@ export const siteConfig = {
   ],
   navMenuItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Shop All",
+      href: "/shop",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Categories",
+      href: "/categories",
     },
     {
-      label: "Projects",
-      href: "/projects",
+      label: "New Arrivals",
+      href: "/new-arrivals",
     },
     {
-      label: "Team",
-      href: "/team",
+      label: "Best Sellers",
+      href: "/best-sellers",
     },
     {
-      label: "Calendar",
-      href: "/calendar",
+      label: "Sale",
+      href: "/sale",
     },
     {
-      label: "Settings",
-      href: "/settings",
+      label: "My Orders",
+      href: "/orders",
     },
     {
-      label: "Help & Feedback",
-      href: "/help-feedback",
+      label: "Wishlist",
+      href: "/wishlist",
+    },
+    {
+      label: "Account Settings",
+      href: "/account",
+    },
+    {
+      label: "Customer Support",
+      href: "/support",
     },
     {
       label: "Logout",
@@ -61,7 +69,7 @@ export const siteConfig = {
   ],
   links: {
     github: "https://github.com/frontio-ai/heroui",
-    twitter: "https://twitter.com/hero_ui",
+    twitter: "https://twitter.com/velora_store",
     docs: "https://heroui.com",
     discord: "https://discord.gg/9b6yyZKmH4",
     sponsor: "https://patreon.com/jrgarciadev",
