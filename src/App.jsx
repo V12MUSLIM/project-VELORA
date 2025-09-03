@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import ProductProvider from "./contexts/productContext.jsx";
 
 import IndexPage from "./pages/index.jsx";
 import ShopPage from "./pages/Shop.jsx";
@@ -8,13 +9,15 @@ import AboutPage from "./pages/about.jsx";
 
 function App() {
   return (
-    <Routes>
-      <Route element={<IndexPage />} path="/project-VELORA/" />
-      <Route element={<ShopPage />} path="/project-VELORA/shop" />
-      <Route element={<DealsPage />} path="/project-VELORA/deals" />
-      <Route element={<Categories />} path="/project-VELORA/categories" />
-      <Route element={<AboutPage />} path="/project-VELORA/about" />
-    </Routes>
+    <ProductProvider>
+      <Routes>
+        <Route element={<IndexPage />} path="/project-VELORA/" />
+        <Route element={<ShopPage />} path="/project-VELORA/shop" />
+        <Route element={<DealsPage />} path="/project-VELORA/deals" />
+        <Route element={<Categories />} path="/project-VELORA/categories" />
+        <Route element={<AboutPage />} path="/project-VELORA/about" />
+      </Routes>
+    </ProductProvider>
   );
 }
 
