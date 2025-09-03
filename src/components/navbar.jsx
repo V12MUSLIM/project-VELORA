@@ -9,6 +9,7 @@ import {
 import { Button } from "@heroui/button";
 import { Badge } from "@heroui/badge";
 import { Input } from "@heroui/input";
+import { Avatar } from "@heroui/avatar";
 import {
   Drawer,
   DrawerContent,
@@ -21,7 +22,7 @@ import clsx from "clsx";
 
 import { siteConfig } from "../config/site";
 import { ThemeSwitch } from "./theme-switch";
-import { TwitterIcon, SearchIcon, ShoppingCartIcon, Logo } from "./icons";
+import { SearchIcon, ShoppingCartIcon, Logo } from "./icons";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -39,6 +40,21 @@ export const Navbar = () => {
         <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
       }
       type="search"
+    />
+  );
+
+  const avatarComponent = (
+    <Avatar
+      src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
+      name="User Avatar"
+      size="sm"
+      isBordered
+      color="primary"
+      className="cursor-pointer"
+      onClick={() => {
+        // Add your avatar click handler here
+        console.log("Avatar clicked");
+      }}
     />
   );
 
@@ -79,15 +95,6 @@ export const Navbar = () => {
         <NavbarContent justify="end" className="gap-4">
           <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
           <NavbarItem>
-            <a
-              href={siteConfig.links.twitter}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <TwitterIcon className="text-default-500" />
-            </a>
-          </NavbarItem>
-          <NavbarItem>
             <Badge content="3" color="primary" size="md" placement="top-right">
               <Button
                 isIconOnly
@@ -103,6 +110,9 @@ export const Navbar = () => {
           </NavbarItem>
           <NavbarItem>
             <ThemeSwitch />
+          </NavbarItem>
+          <NavbarItem>
+            {avatarComponent}
           </NavbarItem>
           {/* Drawer Toggle (Always visible, even on Desktop) */}
           <NavbarItem>
@@ -127,21 +137,20 @@ export const Navbar = () => {
         backdrop="opaque"
       >
         <DrawerContent>
-          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerHeader className="flex flex-col items-start gap-4 pb-6">
+            <span className="text-lg font-semibold">Menu</span>
+            <div className="flex items-center gap-3 w-full">
+              {avatarComponent}
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">John Doe</span>
+                <span className="text-xs text-default-500">john.doe@example.com</span>
+              </div>
+            </div>
+          </DrawerHeader>
           <DrawerBody>
             <div className="flex flex-col gap-4">
               {/* Search Bar */}
               {searchInput}
-
-              {/* Twitter Link */}
-              <a
-                href={siteConfig.links.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-default-500"
-              >
-                <TwitterIcon /> Twitter
-              </a>
 
               {/* Nav Links */}
               {siteConfig.navMenuItems.map((item, index) => (
@@ -152,8 +161,8 @@ export const Navbar = () => {
                     index === 2
                       ? "text-primary"
                       : index === siteConfig.navMenuItems.length - 1
-                      ? "text-danger"
-                      : "text-foreground"
+                        ? "text-danger"
+                        : "text-foreground"
                   )}
                   onClick={() => setIsOpen(false)}
                 >
