@@ -46,7 +46,7 @@ export const Navbar = () => {
     <>
       <HeroUINavbar maxWidth="xl" position="sticky">
         {/* Left Section */}
-        <NavbarContent justify="start">
+        <NavbarContent justify="start" className="gap-6">
           <NavbarBrand className="gap-3 max-w-fit">
             <Link
               className="flex justify-start items-center gap-1"
@@ -56,11 +56,38 @@ export const Navbar = () => {
               <p className="font-bold text-foreground">VELORA</p>
             </Link>
           </NavbarBrand>
+
+          {/* Desktop Navigation Links */}
+          <div className="hidden lg:flex gap-4">
+            {siteConfig.navItems.map((item) => (
+              <NavbarItem key={item.href}>
+                <Link
+                  className={clsx(
+                    "hover:text-primary transition-colors",
+                    "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  )}
+                  to={`/project-VELORA${item.href}`}
+                >
+                  {item.label}
+                </Link>
+              </NavbarItem>
+            ))}
+          </div>
         </NavbarContent>
 
         {/* Right Section */}
-        <NavbarContent justify="end">
-          <NavbarItem className="flex gap-4 items-center">
+        <NavbarContent justify="end" className="gap-4">
+          <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+          <NavbarItem>
+            <a
+              href={siteConfig.links.twitter}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TwitterIcon className="text-default-500" />
+            </a>
+          </NavbarItem>
+          <NavbarItem>
             <Badge content="3" color="primary" size="md" placement="top-right">
               <Button
                 isIconOnly
@@ -73,7 +100,12 @@ export const Navbar = () => {
                 <ShoppingCartIcon size={18} />
               </Button>
             </Badge>
+          </NavbarItem>
+          <NavbarItem>
             <ThemeSwitch />
+          </NavbarItem>
+          {/* Drawer Toggle (Always visible, even on Desktop) */}
+          <NavbarItem>
             <Button
               isIconOnly
               variant="light"
@@ -86,7 +118,7 @@ export const Navbar = () => {
         </NavbarContent>
       </HeroUINavbar>
 
-      {/* Drawer always used */}
+      {/* Drawer */}
       <Drawer
         isOpen={isOpen}
         onOpenChange={setIsOpen}
