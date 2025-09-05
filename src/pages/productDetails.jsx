@@ -205,7 +205,7 @@ const ProductActions = ({ product }) => {
             color="secondary"
             variant="solid"
             size="lg"
-            className="flex-1 h-16 sm:h-14 text-xl sm:text-lg font-semibold bg-orange-500 hover:bg-orange-600 text-white"
+            className="flex-1 h-16 sm:h-14 text-xl sm:text-lg font-semibold bg-orange-500 hover:bg-orange-600 text-white py-4"
             onPress={handleAddToCart}
             isDisabled={!product.inStock}
             startContent={
@@ -228,7 +228,7 @@ const ProductActions = ({ product }) => {
           <Button
             color="primary"
             size="lg"
-            className="flex-1 h-16 sm:h-14 text-xl sm:text-lg font-semibold"
+           className="flex-1 h-16 sm:h-14 text-xl sm:text-lg font-semibold py-4"
             onPress={handleBuyNow}
             isDisabled={!product.inStock}
             startContent={
