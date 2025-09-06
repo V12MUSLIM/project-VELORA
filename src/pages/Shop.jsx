@@ -10,8 +10,12 @@ export default function ShopPage() {
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 w-full">
         <div className="inline-block text-center justify-center">
-          <h1 className={title({ color: "foreground" })}>Shop</h1>
-          <p className="text-default-500 mt-2">Discover our amazing products</p>
+          <h1 className={`${title()} !text-black dark:!text-white`}>
+            Shop
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Discover our amazing products
+          </p>
         </div>
       </section>
 
