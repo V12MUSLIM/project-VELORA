@@ -493,7 +493,6 @@ const [products, setProducts] = useState([
   }
 ]);
 
-// ...existing code...
 
   return (
     <ProductContext.Provider value={{ products, setProducts }}>
