@@ -7,7 +7,7 @@ import DealsPage from "./pages/deals.jsx";
 import Categories from "./pages/Categories.jsx";
 import AboutPage from "./pages/about.jsx";
 import ProductDetails from "./pages/productDetails.jsx";
-import { Heading1 } from "lucide-react";
+import Cart from "./pages/cart.jsx";
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
           element={<ProductDetails />}
         />
         <Route path="*" element={<h1>404 not found </h1>} />
-        <Route path="/project-VELORA/cart" element={<h1>Hello,Cart</h1>}/>
+        <Route path="/project-VELORA/cart" element={<Cart />} />
       </Routes>
     </ProductProvider>
   );
