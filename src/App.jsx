@@ -8,7 +8,7 @@ import Categories from "./pages/Categories.jsx";
 import AboutPage from "./pages/about.jsx";
 import ProductDetails from "./pages/productDetails.jsx";
 import Cart from "./pages/cart.jsx";
-
+import NotFoundPage from "./pages/notFound.jsx";
 function App() {
   return (
     <ProductProvider>
@@ -22,7 +22,7 @@ function App() {
           path="/project-VELORA/shop/product/:id"
           element={<ProductDetails />}
         />
-        <Route path="*" element={<h1>404 not found </h1>} />
+        <Route path="*" element={<NotFoundPage/>} />
         <Route path="/project-VELORA/cart" element={<Cart />} />
       </Routes>
     </ProductProvider>

@@ -112,7 +112,7 @@ export const Navbar = () => {
         <NavbarContent justify="end" className="gap-4">
           <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
           <NavbarItem>
-            <Badge content="3" color="primary" size="md" placement="top-right">
+            <Badge content="0" color="primary" size="md" placement="top-right">
               <Button
                 isIconOnly
                 aria-label="Shopping Cart"
