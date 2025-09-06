@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   Navbar as HeroUINavbar,
   NavbarBrand,
@@ -26,7 +26,22 @@ import { SearchIcon, ShoppingCartIcon, Logo } from "./icons";
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  // Function to check if a nav item is active
+  const isActiveNavItem = (href) => {
+    const currentPath = location.pathname;
+    const itemPath = `/project-VELORA${href}`;
+    
+    // Exact match for home page
+    if (href === "/") {
+      return currentPath === "/project-VELORA/" || currentPath === "/project-VELORA";
+    }
+    
+    // For other pages, check if current path starts with the item path
+    return currentPath.startsWith(itemPath);
+  };
 
   const searchInput = (
     <Input
@@ -80,7 +95,9 @@ export const Navbar = () => {
                 <Link
                   className={clsx(
                     "hover:text-primary transition-colors",
-                    "data-[active=true]:text-primary data-[active=true]:font-medium"
+                    isActiveNavItem(item.href)
+                      ? "text-primary font-medium"
+                      : "text-foreground"
                   )}
                   to={`/project-VELORA${item.href}`}
                 >
@@ -158,8 +175,8 @@ export const Navbar = () => {
                   key={index}
                   to={`/project-VELORA${item.href}`}
                   className={clsx(
-                    index === 2
-                      ? "text-primary"
+                    isActiveNavItem(item.href)
+                      ? "text-primary font-medium"
                       : index === siteConfig.navMenuItems.length - 1
                         ? "text-danger"
                         : "text-foreground"
