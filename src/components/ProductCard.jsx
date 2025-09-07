@@ -5,6 +5,7 @@ import { Chip } from "@heroui/chip";
 import { Image } from "@heroui/image";
 import { Heart, Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCart } from "../contexts/cartContext"; // Update path as needed
 
 export default function ProductCard({ product }) {
   const {
@@ -21,17 +22,32 @@ export default function ProductCard({ product }) {
   } = product;
 
   const [favorited, setFavorited] = useState(isFavorited);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { addToCart } = useCart();
   const savings = originalPrice ? (originalPrice - price).toFixed(2) : null;
 
+  // Fixed handler - no event parameter needed for HeroUI onPress
+  const handleAddToCart = () => {
+    if (!inStock) return;
+    
+    addToCart(product, 1);
+    setAddedToCart(true);
+    
+    // Reset the button text after 2 seconds
+    setTimeout(() => {
+      setAddedToCart(false);
+    }, 2000);
+  };
+
   return (
-    <Link
-      to={`/shop/product/${id}`}
-      className="block group"
-      aria-label={`View details for ${name}`}
+    <Card 
+      className="w-full hover:scale-[1.02] transition-transform duration-300 bg-white dark:bg-black border border-gray-200 dark:border-zinc-800"
     >
-      <Card 
-        className="w-full hover:scale-[1.02] transition-transform duration-300 bg-white dark:bg-black border border-gray-200 dark:border-zinc-800"
-        isPressable
+      {/* Link wraps only the clickable content (image and product info) */}
+      <Link
+        to={`/shop/product/${id}`}
+        className="block group"
+        aria-label={`View details for ${name}`}
       >
         {/* Image Section */}
         <CardHeader className="p-0 relative">
@@ -141,26 +157,26 @@ export default function ProductCard({ product }) {
               </Chip>
             )}
           </div>
-
-          {/* Add to Cart Button */}
-          <Button
-            className={`w-full font-medium ${
-              inStock
-                ? 'bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-zinc-100 data-[pressed=true]:bg-gray-700 dark:data-[pressed=true]:bg-zinc-200'
-                : 'bg-gray-100 dark:bg-zinc-900 text-gray-400 dark:text-zinc-500'
-            }`}
-            variant={inStock ? "solid" : "flat"}
-            isDisabled={!inStock}
-            onPress={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log("Add to cart clicked");
-            }}
-          >
-            {inStock ? "Add to Cart" : "Out of Stock"}
-          </Button>
         </CardBody>
-      </Card>
-    </Link>
-    );
-  }
+      </Link>
+
+      {/* Add to Cart Button - Outside the link */}
+      <div className="px-4 pb-4">
+        <Button
+          className={`w-full font-medium transition-all duration-300 ${
+            inStock
+              ? addedToCart
+                ? 'bg-green-500 text-white'
+                : 'bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-zinc-100 data-[pressed=true]:bg-gray-700 dark:data-[pressed=true]:bg-zinc-200'
+              : 'bg-gray-100 dark:bg-zinc-900 text-gray-400 dark:text-zinc-500'
+          }`}
+          variant={inStock ? "solid" : "flat"}
+          isDisabled={!inStock}
+          onPress={handleAddToCart}
+        >
+          {addedToCart ? "✓ Added to Cart!" : inStock ? "Add to Cart" : "Out of Stock"}
+        </Button>
+      </div>
+    </Card>
+  );
+}
