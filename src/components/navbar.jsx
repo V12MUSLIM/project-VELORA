@@ -32,15 +32,14 @@ export const Navbar = () => {
   // Function to check if a nav item is active
   const isActiveNavItem = (href) => {
     const currentPath = location.pathname;
-    const itemPath = `/project-VELORA${href}`;
     
     // Exact match for home page
     if (href === "/") {
-      return currentPath === "/project-VELORA/" || currentPath === "/project-VELORA";
+      return currentPath === "/";
     }
     
     // For other pages, check if current path starts with the item path
-    return currentPath.startsWith(itemPath);
+    return currentPath.startsWith(href);
   };
 
   const searchInput = (
@@ -81,7 +80,7 @@ export const Navbar = () => {
           <NavbarBrand className="gap-3 max-w-fit">
             <Link
               className="flex justify-start items-center gap-1"
-              to="/project-VELORA/"
+              to="/"
             >
               <Logo />
               <p className="font-bold text-foreground">VELORA</p>
@@ -99,7 +98,7 @@ export const Navbar = () => {
                       ? "text-primary font-medium"
                       : "text-foreground"
                   )}
-                  to={`/project-VELORA${item.href}`}
+                  to={item.href}
                 >
                   {item.label}
                 </Link>
@@ -119,7 +118,7 @@ export const Navbar = () => {
                 className="text-default-500"
                 size="sm"
                 variant="light"
-                onClick={() => navigate("/project-VELORA/cart")}
+                onClick={() => navigate("/cart")}
               >
                 <ShoppingCartIcon size={18} />
               </Button>
@@ -173,7 +172,7 @@ export const Navbar = () => {
               {siteConfig.navMenuItems.map((item, index) => (
                 <Link
                   key={index}
-                  to={`/project-VELORA${item.href}`}
+                  to={item.href}
                   className={clsx(
                     isActiveNavItem(item.href)
                       ? "text-primary font-medium"

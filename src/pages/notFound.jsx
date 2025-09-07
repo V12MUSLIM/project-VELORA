@@ -68,7 +68,7 @@ const NotFoundPage = () => {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
             <Button
               as={Link}
-              to="/project-VELORA/"
+              to="/"
               color="primary"
               size="lg"
               className="font-medium px-8 py-4 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
@@ -78,7 +78,7 @@ const NotFoundPage = () => {
 
             <Button
               as={Link}
-              to="/project-VELORA/shop"
+              to="/shop"
               variant="bordered"
               size="lg"
               className="font-medium px-8 py-4 backdrop-blur-sm border-2 hover:bg-primary/5 transition-all duration-300"

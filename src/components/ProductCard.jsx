@@ -25,7 +25,7 @@ export default function ProductCard({ product }) {
 
   return (
     <Link
-      to={`/project-VELORA/shop/product/${id}`}
+      to={`/shop/product/${id}`}
       className="block group"
       aria-label={`View details for ${name}`}
     >
@@ -162,5 +162,5 @@ export default function ProductCard({ product }) {
         </CardBody>
       </Card>
     </Link>
-  );
-}
+    );
+  }

@@ -185,7 +185,7 @@ export default function IndexPage() {
                 <Button
                   as={Link}
                   className="bg-foreground text-background hover:opacity-80 px-8 py-3 text-lg font-medium transition-all duration-300"
-                  href="/products"
+                  href="/shop"
                   size="lg"
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.98 }}

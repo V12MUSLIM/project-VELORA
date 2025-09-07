@@ -739,7 +739,7 @@ const NotFoundComponent = ({ id, navigate }) => (
           >
             ← Go Back
           </Button>
-          <Button color="primary" as={Link} to="/project-VELORA/shop">
+          <Button color="primary" as={Link} to="/shop">
             Browse Products
           </Button>
         </div>
@@ -843,13 +843,13 @@ export default function ProductDetails() {
           {/* Breadcrumbs */}
           <Breadcrumbs size="lg" className="text-gray-600 dark:text-gray-400">
             <BreadcrumbItem
-              href="/project-VELORA/"
+              href="/"
               className="text-gray-600 dark:text-gray-400"
             >
               Home
             </BreadcrumbItem>
             <BreadcrumbItem
-              href="/project-VELORA/shop"
+              href="/shop"
               className="text-gray-600 dark:text-gray-400"
             >
               Shop
