@@ -625,7 +625,7 @@ export default function ProductProvider({ children }) {
       name: "PlayStation 5 Slim",
       price: 499,
       originalPrice: 549,
-      image: "https://2b.com.eg/media/catalog/product/cache/661473ab953cdcdf4c3b607144109b90/g/m/gm511-min_1.jpg",
+      image: "https://btech.com/media/catalog/product/cache/7a1c3ac7529779766fe048df0162aaaf/1/6/16677fba1a4743540258971c480afe51893969e9e34bb5fd5dd182aa003a96a5.jpeg",
       category: "Gaming",
       rating: 4.9,
       description:
@@ -675,7 +675,7 @@ export default function ProductProvider({ children }) {
       name: "DJI Mini 3 Pro Drone",
       price: 759,
       originalPrice: 849,
-      image: "https://shop.tekobroadcast.com/2572-superlarge_default/dji-mini-3-pro-drone.jpg",
+      image: "https://cdn.salla.sa/Kozd/kpryl7ev3XBfsrDSuV9VLSmOS6IzYRTEj1MoSNWo.jpg",
       category: "Drones",
       rating: 4.7,
       description:
