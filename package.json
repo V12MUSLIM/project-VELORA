@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@heroui/avatar": "^2.2.21",
     "@heroui/badge": "^2.2.16",
     "@heroui/breadcrumbs": "^2.2.21",

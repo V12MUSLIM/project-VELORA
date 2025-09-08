@@ -11,8 +11,11 @@ import Cart from "./pages/cart.jsx";
 import NotFoundPage from "./pages/notFound.jsx";
 import { ToastProvider } from "@heroui/react";
 function App() {
+  console.log("Gemini Key?", import.meta.env.VITE_GEMINI_API_KEY);
+
   return (
     <>
+    
       <div className="fixed z-[100]">
         <ToastProvider
           placement="top-center"

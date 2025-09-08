@@ -1,10 +1,6 @@
 import * as React from "react";
 
-export const Logo = ({
-  size = 25,
-  height,
-  ...props
-}) => (
+export const Logo = ({ size = 25, height, ...props }) => (
   <svg
     fill="none"
     height={size || height}
@@ -45,12 +41,7 @@ export const Logo = ({
   </svg>
 );
 
-export const DiscordIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => {
+export const DiscordIcon = ({ size = 24, width, height, ...props }) => {
   return (
     <svg
       height={size || height}
@@ -65,13 +56,97 @@ export const DiscordIcon = ({
     </svg>
   );
 };
+export const AIIcon = ({ size = 24, width, height, ...props }) => (
+  <svg
+    aria-hidden="true"
+    focusable="false"
+    height={size || height}
+    role="presentation"
+    viewBox="0 0 32 32"
+    width={size || width}
+    {...props}
+  >
+    {/* Background Circle */}
+    <circle cx="16" cy="16" r="16" fill="currentColor" opacity="0.1" />
 
-export const TwitterIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => {
+    {/* Main V Shape with Neural Network Pattern */}
+    <g transform="translate(8, 6)">
+      {/* Primary V Structure */}
+      <path
+        d="M2 4L8 16L14 4"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+
+      {/* Neural Network Nodes */}
+      <circle cx="3" cy="6" r="1.5" fill="currentColor" opacity="0.8" />
+      <circle cx="8" cy="14" r="1.5" fill="currentColor" />
+      <circle cx="13" cy="6" r="1.5" fill="currentColor" opacity="0.8" />
+      <circle cx="5" cy="9" r="1" fill="currentColor" opacity="0.6" />
+      <circle cx="11" cy="9" r="1" fill="currentColor" opacity="0.6" />
+
+      {/* Connecting Lines (Neural Pathways) */}
+      <path d="M3 6L5 9" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <path d="M5 9L8 14" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+      <path
+        d="M11 9L8 14"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.4"
+      />
+      <path
+        d="M13 6L11 9"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.4"
+      />
+      <path d="M5 9L11 9" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+    </g>
+
+    {/* Subtle Data Flow Animation Points */}
+    <g opacity="0.6">
+      <circle cx="12" cy="10" r="0.5" fill="currentColor">
+        <animate
+          attributeName="opacity"
+          values="0.3;0.8;0.3"
+          dur="2s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle cx="20" cy="10" r="0.5" fill="currentColor">
+        <animate
+          attributeName="opacity"
+          values="0.8;0.3;0.8"
+          dur="2s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle cx="16" cy="24" r="0.5" fill="currentColor">
+        <animate
+          attributeName="opacity"
+          values="0.5;1;0.5"
+          dur="1.8s"
+          repeatCount="indefinite"
+        />
+      </circle>
+    </g>
+
+    {/* Subtle outer ring for depth */}
+    <circle
+      cx="16"
+      cy="16"
+      r="15"
+      stroke="currentColor"
+      strokeWidth="0.5"
+      opacity="0.2"
+      fill="none"
+    />
+  </svg>
+);
+export const TwitterIcon = ({ size = 24, width, height, ...props }) => {
   return (
     <svg
       height={size || height}
@@ -87,12 +162,7 @@ export const TwitterIcon = ({
   );
 };
 
-export const GithubIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => {
+export const GithubIcon = ({ size = 24, width, height, ...props }) => {
   return (
     <svg
       height={size || height}
@@ -110,12 +180,7 @@ export const GithubIcon = ({
   );
 };
 
-export const MoonFilledIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => (
+export const MoonFilledIcon = ({ size = 24, width, height, ...props }) => (
   <svg
     aria-hidden="true"
     focusable="false"
@@ -132,12 +197,7 @@ export const MoonFilledIcon = ({
   </svg>
 );
 
-export const SunFilledIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => (
+export const SunFilledIcon = ({ size = 24, width, height, ...props }) => (
   <svg
     aria-hidden="true"
     focusable="false"
@@ -154,12 +214,7 @@ export const SunFilledIcon = ({
   </svg>
 );
 
-export const HeartFilledIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => (
+export const HeartFilledIcon = ({ size = 24, width, height, ...props }) => (
   <svg
     aria-hidden="true"
     focusable="false"
@@ -207,12 +262,7 @@ export const SearchIcon = (props) => (
   </svg>
 );
 
-export const ShoppingCartIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}) => (
+export const ShoppingCartIcon = ({ size = 24, width, height, ...props }) => (
   <svg
     aria-hidden="true"
     focusable="false"
