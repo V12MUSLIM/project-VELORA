@@ -1,9 +1,10 @@
-// src/pages/ProductDetails.jsx
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useProducts } from "../contexts/productContext";
 import DefaultLayout from "../layouts/default";
 import { useCart } from "../contexts/CartContext"; 
+import { ChatTriggerButton } from "./ChatTriggerButton";
+import { GeminiChatModal } from "../components/GeminiChatModal";
 import {
   Card,
   CardBody,
@@ -816,7 +817,11 @@ export default function ProductDetails() {
   const { products, loading } = useProducts();
   const [selectedImage, setSelectedImage] = useState(0);
   const [reviews, setReviews] = useState([]);
-
+  const { 
+   isOpen: isChatOpen, 
+   onOpen: onChatOpen, 
+  onClose: onChatClose 
+  } = useDisclosure();
   const product = products?.find((p) => p.id === parseInt(id, 10));
 
   // Load reviews for this product
@@ -866,6 +871,13 @@ export default function ProductDetails() {
 
   return (
     <DefaultLayout>
+      <ChatTriggerButton onPress={onChatOpen} />
+     <GeminiChatModal 
+      isOpen={isChatOpen} 
+     onClose={onChatClose} 
+      product={product}
+      reviews={reviews}
+ />
       <div className="min-h-screen bg-white dark:bg-black">
         <div className="max-w-7xl mx-auto p-6 space-y-8">
           {/* Breadcrumbs */}
