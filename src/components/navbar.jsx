@@ -23,8 +23,10 @@ import clsx from "clsx";
 import { siteConfig } from "../config/site";
 import { ThemeSwitch } from "./theme-switch";
 import { SearchIcon, ShoppingCartIcon, Logo } from "./icons";
+import { useCart } from "../contexts/CartContext";
 
 export const Navbar = () => {
+  const { itemCount } = useCart(); 
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -110,20 +112,33 @@ export const Navbar = () => {
         {/* Right Section */}
         <NavbarContent justify="end" className="gap-4">
           <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-          <NavbarItem>
-            <Badge content="0" color="primary" size="md" placement="top-right">
-              <Button
-                isIconOnly
-                aria-label="Shopping Cart"
-                className="text-default-500"
-                size="sm"
-                variant="light"
-                onClick={() => navigate("/cart")}
-              >
-                <ShoppingCartIcon size={18} />
-              </Button>
-            </Badge>
-          </NavbarItem>
+         <NavbarItem>
+  {itemCount > 0 ? (
+    <Badge content={itemCount} color="primary" size="md" placement="top-right">
+      <Button
+        isIconOnly
+        aria-label="Shopping Cart"
+        className="text-default-500"
+        size="sm"
+        variant="light"
+        onClick={() => navigate("/cart")}
+      >
+        <ShoppingCartIcon size={18} />
+      </Button>
+    </Badge>
+  ) : (
+    <Button
+      isIconOnly
+      aria-label="Shopping Cart"
+      className="text-default-500"
+      size="sm"
+      variant="light"
+      onClick={() => navigate("/cart")}
+    >
+      <ShoppingCartIcon size={18} />
+    </Button>
+  )}
+</NavbarItem>
           <NavbarItem>
             <ThemeSwitch />
           </NavbarItem>

@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import ProductProvider from "./contexts/productContext.jsx";
+import { CartProvider } from './contexts/CartContext.jsx';
 import IndexPage from "./pages/index.jsx";
 import ShopPage from "./pages/Shop.jsx";
 import DealsPage from "./pages/deals.jsx";
@@ -12,6 +13,7 @@ import NotFoundPage from "./pages/notFound.jsx";
 function App() {
   return (
     <ProductProvider>
+      <CartProvider>
       <Routes>
         <Route path="/" element={<IndexPage />} />
         <Route path="/shop" element={<ShopPage />} />
@@ -22,6 +24,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </CartProvider>
     </ProductProvider>
   );
 }

@@ -5,7 +5,7 @@ import { Chip } from "@heroui/chip";
 import { Image } from "@heroui/image";
 import { Heart, Star } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useCart } from "../contexts/cartContext"; // Update path as needed
+import { useCart } from "../contexts/CartContext"; // Update path as needed
 
 export default function ProductCard({ product }) {
   const {

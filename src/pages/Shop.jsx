@@ -3,6 +3,7 @@ import DefaultLayout from "../layouts/default.jsx";
 import { useProducts } from "../contexts/productContext";
 import ProductCard from "../components/ProductCard.jsx";
 
+
 export default function ShopPage() {
   const { products } = useProducts();
 

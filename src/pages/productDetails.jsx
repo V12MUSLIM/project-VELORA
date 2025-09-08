@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useProducts } from "../contexts/productContext";
 import DefaultLayout from "../layouts/default";
+import { useCart } from "../contexts/CartContext"; 
 import {
   Card,
   CardBody,
@@ -160,11 +161,12 @@ const ProductInfo = ({ product, reviews }) => {
 
 const ProductActions = ({ product }) => {
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
 
   const handleAddToCart = () => {
-    // Here you would typically dispatch an action to add to cart
+    addToCart(product, quantity);
     console.log(`Adding ${quantity} of ${product.name} to cart`);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
