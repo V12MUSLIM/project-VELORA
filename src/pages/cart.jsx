@@ -14,7 +14,6 @@ export default function Cart() {
     } = useCart();
 
     const navigate = useNavigate();
-
     const [promoCode, setPromoCode] = useState("");
     const [discount, setDiscount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,20 +49,20 @@ export default function Cart() {
        <DefaultLayout>
         <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-black dark:text-white transition-colors duration-300">
             <div className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800">
-                <div className="container mx-auto px-4 py-6">
-                    <div className="flex items-center justify-between">
+                <div className="container mx-auto px-4 py-5 sm:px-6">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                                 Shopping Cart
                             </h1>
-                            <p className="text-gray-500 dark:text-gray-400 mt-1">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                 {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
                             </p>
                         </div>
                         <div className="flex items-center gap-4">
                             <button 
                                 onClick={handleGoToShop}
-                                className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-900 dark:border dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-all group"
+                                className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-900 dark:border dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-all group text-sm font-medium"
                             >
                                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                                 Continue Shopping
@@ -73,7 +72,7 @@ export default function Cart() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-6 sm:px-6 lg:py-8">
                 {cartItems.length === 0 ? (
                     <div className="text-center py-16">
                         <ShoppingBag className="w-24 h-24 mx-auto text-gray-400 dark:text-gray-700 mb-6" />
@@ -87,13 +86,13 @@ export default function Cart() {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                         <div className="lg:col-span-2 space-y-6">
                             <div className="space-y-4">
                                 {cartItems.map((item) => (
-                                    <div key={item.id} className="bg-white dark:bg-black rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-800 transition-all">
-                                        <div className="flex flex-col sm:flex-row gap-6">
-                                            <div className="w-full sm:w-24 h-24 bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                    <div key={item.id} className="bg-white dark:bg-black rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
+                                        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                                            <div className="w-full sm:w-24 h-24 bg-gray-100 dark:bg-gray-900 rounded-lg flex-shrink-0">
                                                 <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                             </div>
                                             <div className="flex-1 flex flex-col justify-between">
@@ -103,18 +102,18 @@ export default function Cart() {
                                                             <span className="text-xs font-semibold text-blue-600 dark:text-yellow-400 tracking-wider">
                                                                 {item.category}
                                                             </span>
-                                                            <h3 className="text-lg font-semibold mt-1">{item.name}</h3>
+                                                            <h3 className="text-base sm:text-lg font-semibold mt-1">{item.name}</h3>
                                                         </div>
-                                                        <button onClick={() => removeFromCart(item.id)} className="text-gray-400 hover:text-red-500 dark:text-gray-500 transition-colors p-1">
+                                                        <button onClick={() => removeFromCart(item.id)} className="text-gray-400 hover:text-red-500 dark:text-gray-500 p-1">
                                                             <Trash2 className="w-5 h-5" />
                                                         </button>
                                                     </div>
                                                     <div className="flex items-center gap-2 mb-3">
-                                                        <span className="text-xl font-bold">${item.price.toFixed(2)}</span>
+                                                        <span className="text-lg sm:text-xl font-bold">${item.price.toFixed(2)}</span>
                                                         {item.originalPrice && <span className="text-sm text-gray-500 line-through">${item.originalPrice.toFixed(2)}</span>}
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center justify-between mt-auto">
+                                                <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between mt-2 sm:mt-auto gap-4">
                                                     <div className="flex items-center gap-3">
                                                         <button
                                                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -131,8 +130,8 @@ export default function Cart() {
                                                         </button>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400">Subtotal</p>
-                                                        <p className="text-lg font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Subtotal</p>
+                                                        <p className="text-base sm:text-lg font-bold">${(item.price * item.quantity).toFixed(2)}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -140,23 +139,22 @@ export default function Cart() {
                                     </div>
                                 ))}
                             </div>
-
-                            <div className="bg-white dark:bg-black rounded-xl p-6 border border-gray-200 dark:border-gray-800">
+                            <div className="bg-white dark:bg-black rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
                                 <div className="flex items-center gap-2 mb-4">
                                     <Tag className="w-5 h-5 text-blue-600 dark:text-yellow-400" />
                                     <h3 className="font-semibold">Have a promo code?</h3>
                                 </div>
-                                <div className="flex gap-3">
+                                <div className="flex flex-col sm:flex-row gap-3">
                                     <input
                                         type="text"
                                         value={promoCode}
                                         onChange={(e) => setPromoCode(e.target.value)}
-                                        placeholder="Enter code (try SAVE10)"
-                                        className="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 dark:focus:border-yellow-400 transition-colors"
+                                        placeholder="Enter code"
+                                        className="flex-1 px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg"
                                     />
                                     <button
                                         onClick={applyPromoCode}
-                                        className="px-6 py-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                                        className="px-6 py-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
                                     >
                                         Apply
                                     </button>
@@ -168,11 +166,9 @@ export default function Cart() {
                                 )}
                             </div>
                         </div>
-
                         <div className="lg:col-span-1">
                             <div className="bg-white dark:bg-black rounded-xl p-6 border border-gray-200 dark:border-gray-800 sticky top-8">
                                 <h2 className="text-xl font-bold mb-6">Order Summary</h2>
-
                                 <div className="space-y-3 pb-6 border-b border-gray-200 dark:border-gray-800">
                                      <div className="flex justify-between text-gray-600 dark:text-gray-300">
                                         <span>Subtotal</span>
@@ -199,14 +195,12 @@ export default function Cart() {
                                         <span>${tax.toFixed(2)}</span>
                                     </div>
                                 </div>
-
                                 <div className="flex justify-between items-center py-6">
                                     <span className="text-lg font-semibold">Total</span>
                                     <span className="text-2xl font-bold text-black dark:text-white">
                                         ${total.toFixed(2)}
                                     </span>
                                 </div>
-
                                 <button
                                     onClick={handleCheckout}
                                     disabled={isLoading}
@@ -221,7 +215,6 @@ export default function Cart() {
                                         'Proceed to Checkout'
                                     )}
                                 </button>
-
                                 <div className="mt-6 space-y-3">
                                     <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                                         <Truck className="w-4 h-4" />
