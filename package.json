@@ -38,6 +38,7 @@
     "@heroui/system": "2.4.21",
     "@heroui/tabs": "^2.2.22",
     "@heroui/theme": "^2.4.21",
+    "@heroui/toast": "^2.0.15",
     "@heroui/tooltip": "^2.2.22",
     "@heroui/use-theme": "2.1.10",
     "@react-aria/visually-hidden": "3.8.27",

@@ -24,7 +24,23 @@ import {
   Input,
   Textarea,
   useDisclosure,
+  addToast,
 } from "@heroui/react";
+  const customCloseIcon = (
+    <svg
+      fill="none"
+      height="32"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="32"
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
 
 const ProductImageGallery = ({ product, selectedImage, setSelectedImage }) => {
   return (
@@ -160,6 +176,7 @@ const ProductInfo = ({ product, reviews }) => {
 };
 
 const ProductActions = ({ product }) => {
+
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
@@ -167,7 +184,16 @@ const ProductActions = ({ product }) => {
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
-    console.log(`Adding ${quantity} of ${product.name} to cart`);
+   addToast({
+      hideIcon: true,
+      title: "Added to cart!",
+      description: `${product.name} • $${product.price} • Quantity: ${product.quantity}`,
+      timeout: 3000,
+      classNames: {
+        closeButton: "opacity-100 absolute right-4 top-1/2 -translate-y-1/2",
+      },
+      closeIcon: customCloseIcon,
+    });
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
