@@ -91,7 +91,8 @@ const BentoGrid = () => {
                   alt={device.name}
                   className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-105 filter grayscale group-hover:grayscale-0"
                   onError={(e) => {
-                    e.currentTarget.src = `https://via.placeholder.com/600x400/f5f5f5/000000?text=${device.name}`;
+                    e.currentTarget.onerror = null; // prevent infinite loop
+                    e.currentTarget.src = `${import.meta.env.BASE_URL}no-image.jpeg`; // fallback stored in public/no-image.jpeg
                   }}
                 />
 
@@ -115,9 +116,7 @@ const BentoGrid = () => {
 
         {/* CTA */}
         <div className="mt-12 sm:mt-16 lg:mt-20 text-center">
-          <Link
-          to="/shop"
-          >
+          <Link to="/shop">
             <button className="group relative px-6 sm:px-12 lg:px-16 py-3 sm:py-5 lg:py-6 border-2 border-black dark:border-white text-black dark:text-white font-light tracking-[0.15em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm transition-all duration-700 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black">
               <span className="relative z-10">View Collection</span>
               <div className="absolute inset-0 bg-black dark:bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left"></div>

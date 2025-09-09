@@ -189,7 +189,7 @@ const ProductActions = ({ product }) => {
     addToast({
       hideIcon: true,
       title: "Added to cart!",
-      description: `${product.name} • $${product.price} • Quantity: ${product.quantity}`,
+      description: `${product.name} • $${product.price} • Quantity: ${quantity}`,
       timeout: 3000,
       classNames: {
         closeButton: "opacity-100 absolute right-4 top-1/2 -translate-y-1/2",
@@ -674,8 +674,7 @@ const ProductReviews = ({ product, reviews, onAddReview, onHelpfulReview }) => {
   );
 };
 
-// AI Chat Component with floating design
-// AI Chat Component with elegant black and white design
+
 const AIChatWidget = ({ product }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -742,7 +741,7 @@ const AIChatWidget = ({ product }) => {
     });
   };
 
-  // Custom V Icon Component
+  
   const VIcon = ({ size = 24, className = "" }) => (
     <svg
       width={size}

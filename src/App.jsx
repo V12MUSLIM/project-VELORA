@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import ProductProvider from "./contexts/productContext.jsx";
 import { CartProvider } from "./contexts/CartContext.jsx";
 import IndexPage from "./pages/index.jsx";
@@ -10,18 +10,26 @@ import ProductDetails from "./pages/productDetails.jsx";
 import Cart from "./pages/cart.jsx";
 import NotFoundPage from "./pages/notFound.jsx";
 import { ToastProvider } from "@heroui/react";
+
+import CategoryPage from "./components/cateegoryProduct.jsx"; // You'll need to create this file
+
+// Wrapper component to extract category from URL params
+function CategoryPageWrapper() {
+  const { category } = useParams();
+  return <CategoryPage category={decodeURIComponent(category)} />;
+}
+
 function App() {
   console.log("Gemini Key?", import.meta.env.VITE_GEMINI_API_KEY);
 
   return (
     <>
-    
       <div className="fixed z-[100]">
         <ToastProvider
           placement="top-center"
           toastOffset={60}
           classNames={{
-            base: "!w-[700px]  !bg-white dark:!bg-black !border !border-gray-200 dark:!border-zinc-800 !shadow-lg [&>*]:!bg-white dark:[&>*]:!bg-black",
+            base: "!w-[10000px]  !bg-white dark:!bg-black !border !border-gray-200 dark:!border-zinc-800 !shadow-lg [&>*]:!bg-white dark:[&>*]:!bg-black",
             title: "!text-black dark:!text-white !font-semibold",
             description: "!text-gray-700 dark:!text-zinc-300",
             closeButton:
@@ -37,6 +45,8 @@ function App() {
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/deals" element={<DealsPage />} />
             <Route path="/categories" element={<Categories />} />
+            {/* Add the new category route */}
+            <Route path="/category/:category" element={<CategoryPageWrapper />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/shop/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
@@ -47,4 +57,5 @@ function App() {
     </>
   );
 }
+
 export default App;

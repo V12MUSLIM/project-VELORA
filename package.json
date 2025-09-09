@@ -53,6 +53,7 @@
     "react-dom": "18.3.1",
     "react-responsive": "^10.0.1",
     "react-router-dom": "^6.23.0",
+    "simple-swizzle": "^0.2.2",
     "tailwind-variants": "3.1.0",
     "tailwindcss": "4.1.11"
   },
