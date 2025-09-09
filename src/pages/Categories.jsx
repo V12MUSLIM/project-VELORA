@@ -20,8 +20,8 @@ const categoryData = {
     description: "Professional Cameras & Photography Gear",
     color: "success",
   },
-  TVs: { 
-    image: "tv.jpeg", 
+  TVs: {
+    image: "tv.jpeg",
     description: "Smart TVs & Display Technology",
     color: "warning",
   },
@@ -50,13 +50,13 @@ const categoryData = {
     description: "Smartwatches & Fitness Trackers",
     color: "warning",
   },
-  "VR/AR": { 
-    image: "vr.jpeg", 
+  "VR/AR": {
+    image: "vr.jpeg",
     description: "Virtual & Augmented Reality",
     color: "danger",
   },
-  Components: { 
-    image: "gpu.jpeg", 
+  Components: {
+    image: "gpu.jpeg",
     description: "PC Components & Hardware",
     color: "primary",
   },
@@ -139,28 +139,25 @@ export default function Categories() {
                 <div className="relative overflow-hidden aspect-[4/3]">
                   <img
                     src={getImageSrc(categoryInfo)}
-                    alt={category}
+                    alt={`${category} category`}
                     className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-105"
                     onError={(e) => {
-                      e.currentTarget.onerror = null;
                       e.currentTarget.src =
                         "https://placehold.co/600x400?text=No+Image";
                     }}
                   />
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
-                  
+
                   {/* Product count badge */}
                   <div className="absolute top-4 right-4">
                     <Badge
                       content={productCount}
-                      color={categoryInfo.color}
+                      color="default"
                       variant="solid"
                       size="lg"
-                      className="text-white font-medium"
-                    >
-                      <span className="text-xs px-1">items</span>
-                    </Badge>
+                      className="bg-white text-black font-medium border border-gray-200"
+                    ></Badge>
                   </div>
                 </div>
 
@@ -171,21 +168,14 @@ export default function Categories() {
                       {category}
                     </h3>
                   </div>
-                  
+
                   <p className="text-default-500 text-sm mb-4 line-clamp-2">
                     {categoryInfo.description}
                   </p>
-                  
+
                   {/* Action indicator */}
                   <div className="flex items-center justify-between">
-                    <Badge
-                      color={categoryInfo.color}
-                      variant="flat"
-                      size="sm"
-                    >
-                      {category}
-                    </Badge>
-                    
+                 
                     <div className="flex items-center text-primary font-medium group-hover:text-primary-600">
                       <span className="text-sm">Shop Now</span>
                       <svg
