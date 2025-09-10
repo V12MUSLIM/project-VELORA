@@ -173,21 +173,22 @@ export default function ProductDetails() {
           </div>
 
           {/* Product Grid - Stack on mobile, side-by-side on desktop */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
-            {/* Image Gallery */}
-            <div className="w-full">
-              <ProductImageGallery product={product} />
-            </div>
+{/* Product Grid - Stack on mobile, side-by-side on desktop */}
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16">
+  {/* Image Gallery */}
+  <div className="w-full pt-4 sm:pt-2 lg:pt-0">
+    <ProductImageGallery product={product} />
+  </div>
 
-            {/* Product Info and Actions */}
-            <div className="w-full space-y-6 sm:space-y-8 lg:space-y-12">
-              <ProductInfoSection 
-                product={product} 
-                reviews={reviews} 
-              />
-              <ProductActions product={product} />
-            </div>
-          </div>
+  {/* Product Info and Actions */}
+  <div className="w-full space-y-6 sm:space-y-8 lg:space-y-12">
+    <ProductInfoSection 
+      product={product} 
+      reviews={reviews} 
+    />
+    <ProductActions product={product} />
+  </div>
+</div>
 
           {/* Product Details Tabs - Full width on all screens */}
           <div className="w-full">
