@@ -1,176 +1,369 @@
-// src/gemini.js
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
+// src/gemini.js - Google Gemini API integration (DIRECT AI ONLY)
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
-// Validate API key exists
-if (!API_KEY) {
-  console.warn("⚠️ VITE_GEMINI_API_KEY not found in environment variables");
-}
+// Updated with current model names (September 2025)
+const GEMINI_MODELS = [
+  'gemini-1.5-flash',     // Fast and versatile (recommended for most use cases)
+  'gemini-1.5-pro',       // More capable but slower
+  'gemini-2.0-flash',     // Latest model with improved capabilities
+  'gemini-2.5-flash',     // Best price-performance ratio
+  'gemini-2.5-pro'        // Most advanced model
+];
 
-const genAI = new GoogleGenerativeAI(API_KEY);
+// Default to the most reliable current model
+let WORKING_MODEL = 'gemini-1.5-flash';
+
+// Build the correct API URL with current model
+const getGeminiApiUrl = (model = WORKING_MODEL) => 
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+// Enhanced error messages mapping
+const ERROR_MESSAGES = {
+  503: "The AI service is temporarily unavailable. Please try again in a moment. ⏳",
+  502: "The AI service is experiencing issues. Please try again later. ⏳", 
+  429: "Too many requests. Please wait a moment before asking another question. ⏳",
+  401: "Authentication issue with AI service. Please check API key configuration. 🔧",
+  403: "Access denied. Please verify your Gemini API key permissions. 🔧",
+  400: "Invalid request format. Please try rephrasing your question. 🔄",
+  404: "Model not found. The API model may have changed. 🔧",
+  500: "AI service experiencing issues. Please try again later. ⚠️",
+  quota_exceeded: "API quota exceeded. Please try again later. 📊",
+  safety_blocked: "Response was blocked due to safety filters. Please try rephrasing your question. 🛡️"
+};
+
+// Cache for responses to avoid repeated API calls
+const responseCache = new Map();
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 /**
- * Enhanced function to ask Gemini about a product with better context and error handling
- * @param {Object} product - Product object with all available data
- * @param {string} question - User's question about the product
- * @param {Object} options - Additional options for the AI response
- * @returns {Promise<string>} AI response or error message
+ * Main function to ask Gemini about a product - DIRECT AI ONLY
  */
 export async function askGeminiAboutProduct(product, question, options = {}) {
+  console.log("🤖 Gemini Request (DIRECT AI):", { 
+    productName: product?.name, 
+    question: question.substring(0, 50) + "...", 
+    hasApiKey: !!API_KEY,
+    model: WORKING_MODEL
+  });
+
   // Input validation
   if (!product || typeof product !== 'object') {
-    return "Error: Invalid product data provided.";
+    console.error("❌ Invalid product data");
+    return "I need valid product information to help you.";
   }
 
   if (!question || typeof question !== 'string' || question.trim().length === 0) {
-    return "Please ask a specific question about this product.";
+    return "Please ask me a specific question about this product!";
   }
 
-  // Check if API key is available
-  if (!API_KEY) {
-    return "Error: AI service is not configured properly. Please check API key.";
+  // Check cache first
+  const cacheKey = `${product.id}_${question.toLowerCase().trim()}`;
+  const cached = responseCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log("📦 Using cached AI response");
+    return cached.response;
   }
 
+  // Check API key
+  if (!API_KEY || API_KEY.length < 10) {
+    console.error("❌ Invalid or missing Gemini API key");
+    return getFallbackResponse(product, question);
+  }
+
+  // Go DIRECTLY to Gemini AI (skip rule-based responses)
   try {
-    const model = genAI.getGenerativeModel({ 
-      model: options.model || "gemini-1.5-flash",
-      generationConfig: {
-        temperature: options.temperature || 0.7,
-        maxOutputTokens: options.maxTokens || 1000,
-      }
-    });
-
-    // Build comprehensive product context
-    const productContext = buildProductContext(product);
+    console.log("🚀 Using REAL Gemini AI...");
+    const response = await tryGeminiAPI(product, question, options);
     
-    const prompt = `
-You are a knowledgeable product expert and customer service assistant. Your role is to help customers understand products and make informed decisions.
-
-IMPORTANT RULES:
-- Only answer questions directly related to the product provided
-- If asked about unrelated topics, politely redirect to the product
-- Be helpful, accurate, and conversational
-- Use the product information to provide specific, detailed answers
-- If you don't have enough information, acknowledge limitations honestly
-
-PRODUCT INFORMATION:
-${productContext}
-
-CUSTOMER QUESTION: ${question.trim()}
-
-Please provide a helpful and informative response about this specific product.
-    `;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    
-    if (!response) {
-      throw new Error("Empty response from AI service");
+    if (response && response.length > 10 && !response.includes('Error')) {
+      console.log("✅ Success with REAL Gemini AI");
+      
+      // Cache the response
+      responseCache.set(cacheKey, {
+        response,
+        timestamp: Date.now()
+      });
+      
+      return response;
     }
-
-    return response.text() || "I apologize, but I couldn't generate a response right now. Please try again.";
-
   } catch (error) {
-    console.error("❌ Gemini API error:", error);
+    console.error("❌ Gemini AI failed:", error.message);
     
-    // Handle specific error types
-    if (error.message?.includes('API_KEY')) {
-      return "Error: Invalid API key. Please check your configuration.";
-    } else if (error.message?.includes('quota')) {
-      return "Service temporarily unavailable due to high demand. Please try again later.";
-    } else if (error.message?.includes('blocked')) {
-      return "I'm sorry, but I cannot process this request. Please rephrase your question.";
-    }
-    
-    return "I'm having trouble connecting to the AI service right now. Please try again in a moment.";
+    // Only use fallback as last resort
+    return getFallbackResponse(product, question);
   }
+
+  // Final fallback if AI completely fails
+  console.log("🔄 AI failed, using basic fallback");
+  return getFallbackResponse(product, question);
 }
 
 /**
- * Build comprehensive context string from product data
- * @param {Object} product - Product object
- * @returns {string} Formatted product context
+ * Try Gemini API with model fallback
+ */
+async function tryGeminiAPI(product, question, options = {}) {
+  const prompt = buildGeminiPrompt(product, question);
+  
+  const requestBody = {
+    contents: [{
+      parts: [{
+        text: prompt
+      }]
+    }],
+    generationConfig: {
+      temperature: options.temperature || 0.7,
+      topK: 40,
+      topP: 0.8,
+      maxOutputTokens: options.maxLength || 300, // Increased for better responses
+      stopSequences: []
+    },
+    safetySettings: [
+      {
+        category: "HARM_CATEGORY_HARASSMENT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        category: "HARM_CATEGORY_HATE_SPEECH",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      }
+    ]
+  };
+
+  // Try each model until one works
+  for (const model of GEMINI_MODELS) {
+    try {
+      console.log(`🔄 Trying AI model: ${model}`);
+      
+      const response = await fetch(`${getGeminiApiUrl(model)}?key=${API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        console.warn(`AI Model ${model} failed:`, response.status, errorData);
+        
+        // If it's a 404, try the next model
+        if (response.status === 404) {
+          continue;
+        }
+        
+        // For other errors, throw to try next model
+        if (response.status === 429) {
+          throw new Error('quota_exceeded');
+        }
+        
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.error) {
+        console.warn("Gemini AI Error Response:", result.error);
+        continue; // Try next model
+      }
+      
+      if (result.promptFeedback?.blockReason) {
+        throw new Error('safety_blocked');
+      }
+      
+      if (result.candidates && result.candidates.length > 0) {
+        const candidate = result.candidates[0];
+        
+        if (candidate.finishReason === 'SAFETY') {
+          throw new Error('safety_blocked');
+        }
+        
+        if (candidate.content?.parts?.[0]?.text) {
+          // Update working model for future requests
+          WORKING_MODEL = model;
+          console.log(`✅ AI Response generated using: ${model}`);
+          return cleanResponse(candidate.content.parts[0].text);
+        }
+      }
+      
+    } catch (error) {
+      console.warn(`AI Model ${model} error:`, error.message);
+      // Continue to next model unless it's a safety block
+      if (error.message === 'safety_blocked' || error.message === 'quota_exceeded') {
+        throw error;
+      }
+      continue;
+    }
+  }
+  
+  throw new Error("All AI models failed or are unavailable");
+}
+
+/**
+ * Build enhanced prompt for Gemini AI
+ */
+function buildGeminiPrompt(product, question) {
+  const context = buildProductContext(product);
+  
+  return `You are an expert product consultant with deep knowledge of technology, specifications, and market comparisons. You're helping a customer understand products in detail.
+
+Product Information:
+${context}
+
+Customer Question: ${question}
+
+Please provide a comprehensive, informative response that:
+- Directly answers the customer's specific question
+- Uses technical knowledge and industry insights
+- Compares with similar products when relevant
+- Explains benefits and potential drawbacks
+- Suggests practical applications or use cases
+- Keeps the tone conversational but authoritative
+
+Generate a detailed response (200-300 words) that demonstrates real AI understanding and analysis:`;
+}
+
+/**
+ * Build comprehensive product context for AI
  */
 function buildProductContext(product) {
   const context = [];
   
-  // Basic product info
   if (product.name) context.push(`Product Name: ${product.name}`);
-  if (product.description) context.push(`Description: ${product.description}`);
   if (product.category) context.push(`Category: ${product.category}`);
+  if (product.price !== undefined) context.push(`Price: $${product.price}`);
+  if (product.rating !== undefined) context.push(`Customer Rating: ${product.rating}/5 stars`);
+  if (product.badge) context.push(`Special Features: ${product.badge}`);
   
-  // Pricing information
-  if (product.price !== undefined) {
-    context.push(`Current Price: $${product.price}`);
-  }
-  if (product.originalPrice !== undefined && product.originalPrice !== product.price) {
-    context.push(`Original Price: $${product.originalPrice}`);
-    const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-    context.push(`Discount: ${discount}% off`);
+  if (product.description) {
+    context.push(`Product Description: ${product.description}`);
   }
   
-  // Stock and ratings
-  if (product.inStock !== undefined) {
-    context.push(`Availability: ${product.inStock ? 'In Stock' : 'Out of Stock'}`);
-  }
-  if (product.rating !== undefined) {
-    context.push(`Customer Rating: ${product.rating}/5 stars`);
-  }
-  if (product.badge) context.push(`Badge: ${product.badge}`);
-  
-  // Technical specifications
-  if (product.specs && Array.isArray(product.specs) && product.specs.length > 0) {
-    context.push("\nTechnical Specifications:");
-    product.specs.forEach(spec => {
-      if (spec.label && spec.value) {
-        context.push(`- ${spec.label}: ${spec.value}`);
-      }
-    });
-  }
-  
-  // Additional features if available
-  if (product.features && Array.isArray(product.features)) {
-    context.push("\nKey Features:");
-    product.features.forEach(feature => {
-      context.push(`- ${feature}`);
-    });
-  }
-  
-  // Warranty or additional info
-  if (product.warranty) context.push(`Warranty: ${product.warranty}`);
-  if (product.brand) context.push(`Brand: ${product.brand}`);
-  if (product.model) context.push(`Model: ${product.model}`);
+  // Add context for better AI responses
+  context.push(`Market Context: This is a consumer product being evaluated for purchase decision.`);
+  context.push(`Response Goal: Help the customer make an informed decision with expert-level insights.`);
   
   return context.join('\n');
 }
 
 /**
- * Validate product object has minimum required fields
- * @param {Object} product - Product to validate
- * @returns {boolean} Whether product has minimum required data
+ * Clean AI responses
  */
-export function validateProduct(product) {
-  return product && 
-         typeof product === 'object' && 
-         (product.name || product.description || (product.specs && product.specs.length > 0));
+function cleanResponse(response) {
+  if (!response) return '';
+  
+  return response
+    .replace(/^(Response:|Answer:|A:)/i, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold formatting
+    .replace(/\n+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /**
- * Get available product information summary
- * @param {Object} product - Product object
- * @returns {string} Summary of available product data
+ * Minimal fallback responses (only when AI completely fails)
  */
-export function getProductSummary(product) {
-  if (!validateProduct(product)) {
-    return "No valid product information available.";
+function getFallbackResponse(product, question) {
+  return `I'd love to help you learn about the ${product.name}, but I'm having trouble accessing detailed information right now. Could you try asking your question again, or check the product specifications directly?`;
+}
+
+/**
+ * Test Gemini connection with current models
+ */
+export async function testGeminiConnection() {
+  if (!API_KEY || API_KEY.length < 10) {
+    return { success: false, error: "Invalid or missing Gemini API key" };
   }
+
+  try {
+    const testPrompt = "Hello, please respond with 'Connection successful' if you can read this.";
+    
+    const requestBody = {
+      contents: [{
+        parts: [{
+          text: testPrompt
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.1,
+        maxOutputTokens: 50
+      }
+    };
+
+    // Try each model until one works
+    for (const model of GEMINI_MODELS) {
+      try {
+        console.log(`🔄 Testing AI model: ${model}`);
+        
+        const response = await fetch(`${getGeminiApiUrl(model)}?key=${API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.candidates && result.candidates.length > 0) {
+            WORKING_MODEL = model;
+            console.log(`✅ AI Connection successful with model: ${model}`);
+            return { 
+              success: true,
+              status: response.status,
+              model: model,
+              message: `Successfully connected to real AI using ${model}`
+            };
+          }
+        } else {
+          console.warn(`AI Model ${model} failed with status:`, response.status);
+          continue;
+        }
+      } catch (error) {
+        console.warn(`AI Model ${model} connection failed:`, error.message);
+        continue;
+      }
+    }
+
+    return { 
+      success: false, 
+      error: "All AI models failed - please check your API key or try again later" 
+    };
+  } catch (error) {
+    console.error("Gemini AI connection test error:", error);
+    return { success: false, error: `Network error: ${error.message}` };
+  }
+}
+
+/**
+ * Clear cache
+ */
+export function clearCache() {
+  responseCache.clear();
+  console.log("🧹 AI Cache cleared");
+}
+
+/**
+ * Debug configuration
+ */
+export function debugConfiguration() {
+  const maskedKey = API_KEY ? `${API_KEY.substring(0, 8)}...${API_KEY.slice(-4)}` : 'none';
   
-  const summary = [];
-  if (product.name) summary.push(`Name: ${product.name}`);
-  if (product.price) summary.push(`Price: $${product.price}`);
-  if (product.category) summary.push(`Category: ${product.category}`);
-  if (product.specs?.length) summary.push(`${product.specs.length} specifications available`);
-  
-  return summary.join(' | ') || "Basic product information available";
+  console.log("🔍 Gemini AI Configuration:", {
+    hasApiKey: !!API_KEY,
+    apiKeyLength: API_KEY ? API_KEY.length : 0,
+    apiKeyPreview: maskedKey,
+    workingModel: WORKING_MODEL,
+    availableModels: GEMINI_MODELS,
+    cacheSize: responseCache.size,
+    environment: import.meta.env.MODE,
+    mode: "DIRECT AI ONLY (No rule-based responses)"
+  });
 }

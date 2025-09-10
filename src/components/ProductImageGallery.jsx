@@ -4,7 +4,7 @@ const ProductImageGallery = ({ product, className = "" }) => {
   const [selectedImage, setSelectedImage] = useState(0);
 
   return (
-    <div className={`w-full space-y-4 sm:space-y-6 ${className}`}>
+    <div className={`w-full space-y-4 sm:space-y-6 ${className}`} style={{ paddingTop: 'clamp(16px, 4vw, 24px)' }}>
       {/* Main Image Container */}
       <div className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-gray-50 dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800">
         <div className="aspect-square sm:aspect-[4/3] lg:aspect-square xl:aspect-[4/3] w-full">
