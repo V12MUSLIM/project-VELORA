@@ -4,6 +4,7 @@ import DefaultLayout from "../layouts/default";
 import { useCart } from "../contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 
+
 export default function Cart() {
     const { 
         cartItems, 
