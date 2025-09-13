@@ -68,7 +68,7 @@ const BentoGrid = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-20">
-          <h1 className="text-5xl sm:text-7xl lg:text-9xl font-thin text-black dark:text-white mb-6 sm:mb-8 tracking-[0.3em] leading-none">
+          <h1 className="text-5xl sm:text-7xl lg:text-9xl font-thin text-black dark:text-white mb-6 sm:mb-8 tracking-widest sm:tracking-[0.3em] leading-none">
             COLLECTIONS
           </h1>
           <p className="text-gray-600 dark:text-gray-300 text-base sm:text-xl font-extralight tracking-[0.15em] sm:tracking-[0.2em] uppercase">
