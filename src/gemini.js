@@ -41,7 +41,6 @@ async function fetchWithRetry(url, options, retries = 2, delay = 1000) {
 
     // For 503/502, wait and retry
     if ((res.status === 503 || res.status === 502) && i < retries) {
-      console.warn(`Retrying in ${delay}ms...`);
       await new Promise(r => setTimeout(r, delay));
       delay *= 2; // exponential backoff
       continue;
@@ -55,15 +54,7 @@ async function fetchWithRetry(url, options, retries = 2, delay = 1000) {
  * Main function to ask Gemini about a product - DIRECT AI ONLY
  */
 export async function askGeminiAboutProduct(product, question, options = {}) {
-  console.log("🤖 Gemini Request (DIRECT AI):", {
-    productName: product?.name,
-    question: question.substring(0, 50) + "...",
-    hasApiKey: !!API_KEY,
-    model: WORKING_MODEL
-  });
-
   if (!product || typeof product !== 'object') {
-    console.error("❌ Invalid product data");
     return "I need valid product information to help you.";
   }
 
@@ -75,22 +66,17 @@ export async function askGeminiAboutProduct(product, question, options = {}) {
   const cacheKey = `${product.id}_${question.toLowerCase().trim()}`;
   const cached = responseCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log("📦 Using cached AI response");
     return cached.response;
   }
 
   if (!API_KEY || API_KEY.length < 10) {
-    console.error("❌ Invalid or missing Gemini API key");
     return getFallbackResponse(product, question);
   }
 
   try {
-    console.log("🚀 Using REAL Gemini AI...");
     const response = await tryGeminiAPI(product, question, options);
 
     if (response && response.length > 10 && !response.includes('Error')) {
-      console.log("✅ Success with REAL Gemini AI");
-
       responseCache.set(cacheKey, {
         response,
         timestamp: Date.now()
@@ -99,11 +85,9 @@ export async function askGeminiAboutProduct(product, question, options = {}) {
       return response;
     }
   } catch (error) {
-    console.error("❌ Gemini AI failed:", error.message);
     return getFallbackResponse(product, question);
   }
 
-  console.log("🔄 AI failed, using basic fallback");
   return getFallbackResponse(product, question);
 }
 
@@ -134,8 +118,6 @@ async function tryGeminiAPI(product, question, options = {}) {
 
   for (const model of GEMINI_MODELS) {
     try {
-      console.log(`🔄 Trying AI model: ${model}`);
-
       // First try v1
       let response = await fetchWithRetry(`${getGeminiApiUrl(model)}?key=${API_KEY}`, {
         method: 'POST',
@@ -145,7 +127,6 @@ async function tryGeminiAPI(product, question, options = {}) {
 
       // If v1 gives 404, try v1beta
       if (response.status === 404) {
-        console.warn(`⚠️ ${model} not found on v1, retrying with v1beta...`);
         response = await fetchWithRetry(`${getGeminiApiUrl(model, true)}?key=${API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -154,19 +135,14 @@ async function tryGeminiAPI(product, question, options = {}) {
       }
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        console.warn(`AI Model ${model} failed:`, response.status, errorData);
-
         if (response.status === 429) throw new Error('quota_exceeded');
         if (response.status === 503) throw new Error(ERROR_MESSAGES[503]);
-
         continue; // try next model
       }
 
       const result = await response.json();
 
       if (result.error) {
-        console.warn("Gemini AI Error Response:", result.error);
         continue;
       }
 
@@ -183,13 +159,11 @@ async function tryGeminiAPI(product, question, options = {}) {
 
         if (candidate.content?.parts?.[0]?.text) {
           WORKING_MODEL = model;
-          console.log(`✅ AI Response generated using: ${model}`);
           return cleanResponse(candidate.content.parts[0].text);
         }
       }
 
     } catch (error) {
-      console.warn(`AI Model ${model} error:`, error.message);
       if (error.message === 'safety_blocked' || error.message === 'quota_exceeded') {
         throw error;
       }
@@ -275,8 +249,6 @@ export async function testGeminiConnection() {
 
     for (const model of GEMINI_MODELS) {
       try {
-        console.log(`🔄 Testing AI model: ${model}`);
-
         let response = await fetchWithRetry(`${getGeminiApiUrl(model)}?key=${API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -295,7 +267,6 @@ export async function testGeminiConnection() {
           const result = await response.json();
           if (result.candidates && result.candidates.length > 0) {
             WORKING_MODEL = model;
-            console.log(`✅ AI Connection successful with model: ${model}`);
             return {
               success: true,
               status: response.status,
@@ -304,11 +275,9 @@ export async function testGeminiConnection() {
             };
           }
         } else {
-          console.warn(`AI Model ${model} failed with status:`, response.status);
           continue;
         }
       } catch (error) {
-        console.warn(`AI Model ${model} connection failed:`, error.message);
         continue;
       }
     }
@@ -318,7 +287,6 @@ export async function testGeminiConnection() {
       error: "All AI models failed - please check your API key or try again later"
     };
   } catch (error) {
-    console.error("Gemini AI connection test error:", error);
     return { success: false, error: `Network error: ${error.message}` };
   }
 }
@@ -328,23 +296,18 @@ export async function testGeminiConnection() {
  */
 export function clearCache() {
   responseCache.clear();
-  console.log("🧹 AI Cache cleared");
 }
 
 /**
- * Debug configuration
+ * Debug configuration - minimal version for production debugging only
  */
 export function debugConfiguration() {
   const maskedKey = API_KEY ? `${API_KEY.substring(0, 8)}...${API_KEY.slice(-4)}` : 'none';
 
-  console.log("🔍 Gemini AI Configuration:", {
+  return {
     hasApiKey: !!API_KEY,
-    apiKeyLength: API_KEY ? API_KEY.length : 0,
-    apiKeyPreview: maskedKey,
     workingModel: WORKING_MODEL,
-    availableModels: GEMINI_MODELS,
     cacheSize: responseCache.size,
-    environment: import.meta.env.MODE,
-    mode: "DIRECT AI ONLY (No rule-based responses)"
-  });
+    apiKeyPreview: maskedKey
+  };
 }

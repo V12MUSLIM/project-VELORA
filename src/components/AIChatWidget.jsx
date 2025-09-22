@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Bot, AlertCircle } from 'lucide-react';
-import { askGeminiAboutProduct, testGeminiConnection, debugConfiguration } from '../gemini';
+import { askGeminiAboutProduct, testGeminiConnection } from '../gemini';
 
 const AIChatWidget = ({ product, className = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,7 +38,6 @@ const AIChatWidget = ({ product, className = "" }) => {
       setConnectionStatus(result.success ? 'good' : 'bad');
       
       if (!result.success) {
-        console.warn("❌ Gemini Connection Test Failed:", result.error);
         // Add a system message about connection issues
         setMessages(prev => [...prev, {
           id: Date.now(),
@@ -46,11 +45,8 @@ const AIChatWidget = ({ product, className = "" }) => {
           content: "⚠️ AI connection test failed. Responses may be limited.",
           timestamp: new Date(),
         }]);
-      } else {
-        console.log("✅ Gemini Connection Test Passed");
       }
     } catch (error) {
-      console.error("Connection test error:", error);
       setConnectionStatus('bad');
     }
   };
@@ -70,21 +66,12 @@ const AIChatWidget = ({ product, className = "" }) => {
     setUserInput("");
     setIsLoading(true);
 
-    // Add debug info to console
-    console.log("🤖 Sending Gemini AI request:", {
-      question: currentQuestion,
-      product: product.name,
-      connectionStatus
-    });
-
     try {
       // Use Gemini API with improved error handling
       const aiResponse = await askGeminiAboutProduct(product, currentQuestion, {
         maxLength: 200,
         temperature: 0.7
       });
-
-      console.log("✅ Gemini Response received:", aiResponse);
 
       const aiMessage = {
         id: Date.now() + 1,
@@ -100,8 +87,6 @@ const AIChatWidget = ({ product, className = "" }) => {
       }
 
     } catch (error) {
-      console.error("💥 Gemini Chat error:", error);
-      
       const errorMessage = {
         id: Date.now() + 1,
         type: "ai",
@@ -140,12 +125,6 @@ const AIChatWidget = ({ product, className = "" }) => {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  // Debug button for development
-  const handleDebug = () => {
-    debugConfiguration();
-    testConnection();
   };
 
   const SendIcon = () => (
@@ -201,17 +180,6 @@ const AIChatWidget = ({ product, className = "" }) => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                {/* Debug button (only show in development) */}
-                {process.env.NODE_ENV === 'development' && (
-                  <button
-                    onClick={handleDebug}
-                    className="hover:bg-white/10 dark:hover:bg-black/10 rounded-full p-1 
-                              transition-all duration-200 text-xs"
-                    title="Debug Gemini AI"
-                  >
-                    🔍
-                  </button>
-                )}
                 <button
                   onClick={() => setIsOpen(false)}
                   className="hover:bg-white/10 dark:hover:bg-black/10 rounded-full p-2 
