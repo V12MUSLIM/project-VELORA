@@ -8,7 +8,7 @@ const AIChatWidget = ({ product, className = "" }) => {
     {
       id: 1,
       type: "ai",
-      content: `Hello! I'm here to help you learn more about the ${product.name}. What would you like to know?`,
+      content: `Hello! I'm VELORA AI Assistant. And I'm here to help you learn more about the ${product.name}. What would you like to know?`,
       timestamp: new Date(),
     },
   ]);
@@ -173,7 +173,7 @@ const AIChatWidget = ({ product, className = "" }) => {
                   } />
                 </div>
                 <div>
-                  <h3 className="font-medium text-base">Gemini AI Assistant</h3>
+                  <h3 className="font-medium text-base">VELORA AI Assistant</h3>
                   <p className="text-xs opacity-70 truncate max-w-32">
                     Ask about {product.name}
                   </p>

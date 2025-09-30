@@ -165,7 +165,7 @@ export default function ProductDetails() {
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-8 lg:space-y-12">
           
           {/* Breadcrumbs - Hidden on mobile to save space */}
-          <div className="hidden sm:block">
+          <div>
             <BreadcrumbNavigation 
               items={breadcrumbItems}
               className="pt-0 sm:pt-2 lg:pt-4"

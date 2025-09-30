@@ -1,11 +1,13 @@
-
 import { useState } from "react";
 
 const ProductImageGallery = ({ product, className = "" }) => {
   const [selectedImage, setSelectedImage] = useState(0);
 
   return (
-    <div className={`w-full space-y-4 sm:space-y-6 ${className}`} style={{ paddingTop: 'clamp(16px, 4vw, 24px)' }}>
+    <div
+      className={`w-full space-y-4 sm:space-y-6 ${className}`}
+      style={{ paddingTop: "clamp(16px, 4vw, 24px)" }}
+    >
       {/* Main Image Container */}
       <div className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl bg-gray-50 dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800">
         <div className="aspect-square sm:aspect-[4/3] lg:aspect-square xl:aspect-[4/3] w-full">
@@ -27,7 +29,7 @@ const ProductImageGallery = ({ product, className = "" }) => {
               <button
                 key={index}
                 onClick={() => setSelectedImage(index)}
-                className={`flex-shrink-0 w-16 h-16 overflow-hidden rounded-xl transition-all duration-300 ${
+                className={`flex-shrink-0 w-16 h-16 overflow-hidden rounded-xl transition-all duration-300 mt-8 mr-3 ${
                   selectedImage === index
                     ? "ring-2 ring-black dark:ring-white ring-offset-2 dark:ring-offset-black scale-105"
                     : "opacity-70 hover:opacity-100 hover:scale-105"
@@ -67,6 +69,5 @@ const ProductImageGallery = ({ product, className = "" }) => {
     </div>
   );
 };
-
 
 export default ProductImageGallery;

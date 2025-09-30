@@ -1,4 +1,3 @@
-// src/gemini.js - Google Gemini API integration (DIRECT AI ONLY)
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 // Updated with current model names (September 2025)
