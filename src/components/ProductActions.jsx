@@ -16,29 +16,37 @@ const ProductActions = ({ product, className = "" }) => {
   };
 
   const handleBuyNow = () => {
-    navigate("/checkout", { state: { product, quantity } });
+    addToCart(product, quantity);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+    navigate("/cart", { state: { product, quantity } });
   };
 
   const subtotal = (product.price * quantity).toFixed(2);
 
   return (
-    <div className={`bg-white dark:bg-black rounded-3xl border border-gray-200 dark:border-gray-800 
-                     shadow-sm p-8 space-y-8 ${className}`}>
-      
+    <div
+      className={`bg-white dark:bg-black rounded-3xl border border-gray-200 dark:border-gray-800 
+                     shadow-sm p-8 space-y-8 ${className}`}
+    >
       {product.inStock && (
         <>
           {/* Quantity and Subtotal */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-500 mb-2">Quantity</p>
+              <p className="text-sm text-gray-500 dark:text-gray-500 mb-2">
+                Quantity
+              </p>
               <QuantitySelector
                 quantity={quantity}
                 onQuantityChange={setQuantity}
               />
             </div>
-            
+
             <div className="text-right">
-              <p className="text-sm text-gray-500 dark:text-gray-500 mb-1">Total</p>
+              <p className="text-sm text-gray-500 dark:text-gray-500 mb-1">
+                Total
+              </p>
               <p className="text-3xl font-light text-black dark:text-white">
                 ${subtotal}
               </p>
@@ -106,14 +114,34 @@ const ProductActions = ({ product, className = "" }) => {
       {/* Additional Info */}
       <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-3 text-sm text-gray-500 dark:text-gray-500">
         <div className="flex items-center gap-2">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
           </svg>
           <span>Free shipping on orders over $100</span>
         </div>
         <div className="flex items-center gap-2">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <span>30-day return policy</span>
         </div>

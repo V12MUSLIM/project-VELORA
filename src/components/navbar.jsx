@@ -163,7 +163,7 @@ export const Navbar = () => {
       <Drawer
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        placement="left"
+        placement="right"
         size="sm"
         backdrop="opaque"
       >

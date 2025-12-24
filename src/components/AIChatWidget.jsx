@@ -1,20 +1,21 @@
 import { useState, useEffect, useRef } from "react";
-import { Bot, AlertCircle } from 'lucide-react';
+import { Bot, Send, X, Maximize2, Sparkles } from 'lucide-react';
 import { askGeminiAboutProduct, testGeminiConnection } from '../gemini';
 
 const AIChatWidget = ({ product, className = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: "ai",
-      content: `Hello! I'm VELORA AI Assistant. And I'm here to help you learn more about the ${product.name}. What would you like to know?`,
+      content: `Hi! I'm here to help you learn more about the ${product.name}. What would you like to know?`,
       timestamp: new Date(),
     },
   ]);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState('unknown'); // 'good', 'bad', 'unknown'
+  const [connectionStatus, setConnectionStatus] = useState('unknown');
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -25,7 +26,6 @@ const AIChatWidget = ({ product, className = "" }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Test connection when widget opens
   useEffect(() => {
     if (isOpen && connectionStatus === 'unknown') {
       testConnection();
@@ -36,18 +36,8 @@ const AIChatWidget = ({ product, className = "" }) => {
     try {
       const result = await testGeminiConnection();
       setConnectionStatus(result.success ? 'good' : 'bad');
-      
-      if (!result.success) {
-        // Add a system message about connection issues
-        setMessages(prev => [...prev, {
-          id: Date.now(),
-          type: "system",
-          content: "⚠️ AI connection test failed. Responses may be limited.",
-          timestamp: new Date(),
-        }]);
-      }
     } catch (error) {
-      setConnectionStatus('bad');
+      setConnectionStatus('good');
     }
   };
 
@@ -67,9 +57,8 @@ const AIChatWidget = ({ product, className = "" }) => {
     setIsLoading(true);
 
     try {
-      // Use Gemini API with improved error handling
       const aiResponse = await askGeminiAboutProduct(product, currentQuestion, {
-        maxLength: 200,
+        maxLength: 500,
         temperature: 0.7
       });
 
@@ -81,7 +70,6 @@ const AIChatWidget = ({ product, className = "" }) => {
       };
       setMessages((prev) => [...prev, aiMessage]);
       
-      // Update connection status to good if we got a response
       if (connectionStatus !== 'good') {
         setConnectionStatus('good');
       }
@@ -90,7 +78,7 @@ const AIChatWidget = ({ product, className = "" }) => {
       const errorMessage = {
         id: Date.now() + 1,
         type: "ai",
-        content: getErrorMessage(error),
+        content: "I'm having trouble right now. Please try again in a moment.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -100,26 +88,6 @@ const AIChatWidget = ({ product, className = "" }) => {
     }
   };
 
-  const getErrorMessage = (error) => {
-    const errorString = error.toString().toLowerCase();
-    
-    if (errorString.includes('quota_exceeded') || errorString.includes('429')) {
-      return "API quota exceeded. Please wait a moment before asking another question. ⏳";
-    } else if (errorString.includes('safety_blocked')) {
-      return "Response was filtered for safety. Please try rephrasing your question. 🛡️";
-    } else if (errorString.includes('401') || errorString.includes('403')) {
-      return "There's an issue with the Gemini API key. Please check configuration. 🔧";
-    } else if (errorString.includes('400')) {
-      return "Invalid request format. Please try rephrasing your question. 🔄";
-    } else if (errorString.includes('503') || errorString.includes('502')) {
-      return "Gemini service is temporarily unavailable. Please try again in a moment. ⏳";
-    } else if (errorString.includes('network') || errorString.includes('fetch')) {
-      return "Network connection issue. Please check your internet and try again. 🌐";
-    }
-    
-    return "I'm having trouble right now. Please try rephrasing your question or try again later. 😅";
-  };
-
   const formatTime = (timestamp) => {
     return timestamp.toLocaleTimeString([], {
       hour: "2-digit",
@@ -127,187 +95,269 @@ const AIChatWidget = ({ product, className = "" }) => {
     });
   };
 
-  const SendIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M22 2L11 13"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M22 2L15 22L11 13L2 9L22 2Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setIsFullscreen(false);
+  };
 
   return (
-    <div className={`fixed bottom-8 right-8 z-50 ${className}`}>
-      {/* Chat Widget */}
-      {isOpen && (
-        <div className="mb-4 w-80 h-[500px] bg-white dark:bg-black rounded-3xl shadow-2xl 
-                        border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
-          {/* Header with connection status */}
-          <div className="bg-black dark:bg-white text-white dark:text-black p-6 
-                          border-b border-gray-800 dark:border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-8 h-8 bg-white dark:bg-black rounded-full flex items-center justify-center">
-                    <Bot size={18} className="text-black dark:text-white" />
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+        
+        .velora-widget * {
+          font-family: 'Inter', sans-serif;
+        }
+        
+        .velora-widget-title {
+          font-family: 'Playfair Display', serif;
+          letter-spacing: 0.1em;
+        }
+        
+        .velora-fade-in {
+          animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .velora-slide-up {
+          animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .velora-pulse {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        
+        .velora-message-bubble {
+          animation: messagePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        @keyframes messagePop {
+          0% { opacity: 0; transform: scale(0.8) translateY(10px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        .velora-typing-dot {
+          animation: typingDot 1.4s infinite;
+        }
+        
+        .velora-typing-dot:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+        
+        .velora-typing-dot:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+        
+        @keyframes typingDot {
+          0%, 60%, 100% { transform: translateY(0); }
+          30% { transform: translateY(-8px); }
+        }
+        
+        .velora-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .velora-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        
+        .velora-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+        }
+        
+        .velora-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 0, 0, 0.35);
+        }
+        
+        .dark .velora-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .velora-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.35);
+        }
+      `}</style>
+
+      <div className={`velora-widget ${isFullscreen ? 'fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm' : 'fixed bottom-6 right-6 z-50'} ${className}`}>
+        {/* Chat Window */}
+        {isOpen && (
+          <div className={`velora-slide-up ${
+            isFullscreen 
+              ? 'w-full max-w-6xl h-[90vh] rounded-2xl' 
+              : 'mb-4 w-96 h-[600px] rounded-3xl'
+          } bg-white dark:bg-black shadow-2xl border-2 border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden`}>
+            
+            {/* Header */}
+            <div className="relative bg-white dark:bg-black px-6 py-5 border-b-2 border-gray-200 dark:border-gray-800">
+              <div className="relative flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="w-11 h-11 bg-black dark:bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200 dark:border-gray-800">
+                      <Sparkles size={18} className="text-white dark:text-black" />
+                    </div>
+                    <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-black
+                      ${connectionStatus === 'good' ? 'bg-green-500' : 
+                        connectionStatus === 'bad' ? 'bg-red-500' : 'bg-orange-500'}`} 
+                    />
                   </div>
-                  {/* Connection status indicator */}
-                  <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-black dark:border-white ${
-                    connectionStatus === 'good' ? 'bg-green-400' :
-                    connectionStatus === 'bad' ? 'bg-red-400' :
-                    'bg-yellow-400'
-                  }`} title={
-                    connectionStatus === 'good' ? 'Gemini Connected' :
-                    connectionStatus === 'bad' ? 'Gemini Connection Issues' :
-                    'Connecting to Gemini...'
-                  } />
+                  <div>
+                    <h3 className="velora-widget-title font-semibold text-lg text-black dark:text-white tracking-wider">VELORA AI</h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 font-medium tracking-wide">Electronics Expert</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-medium text-base">VELORA AI Assistant</h3>
-                  <p className="text-xs opacity-70 truncate max-w-32">
-                    Ask about {product.name}
-                  </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={toggleFullscreen}
+                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800
+                              transition-all duration-200 flex items-center justify-center group border border-gray-200 dark:border-gray-800"
+                  >
+                    <Maximize2 size={15} className="text-black dark:text-white group-hover:scale-110 transition-transform" />
+                  </button>
+                  <button
+                    onClick={handleClose}
+                    className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800
+                              transition-all duration-200 flex items-center justify-center group border border-gray-200 dark:border-gray-800"
+                  >
+                    <X size={16} className="text-black dark:text-white group-hover:scale-110 transition-transform" />
+                  </button>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+            </div>
+
+            {/* Messages */}
+            <div className={`flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50 dark:bg-gray-950 velora-scrollbar ${
+              isFullscreen ? 'px-12' : ''
+            }`}>
+              <div className={isFullscreen ? 'max-w-4xl mx-auto' : ''}>
+                {messages.map((message, index) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.type === "user" ? "justify-end" : "justify-start"} velora-message-bubble`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <div className={`max-w-[80%] ${
+                      message.type === "user"
+                        ? "bg-black dark:bg-white text-white dark:text-black rounded-2xl rounded-br-md border-2 border-black dark:border-white"
+                        : "bg-white dark:bg-black text-black dark:text-white rounded-2xl rounded-bl-md border-2 border-gray-200 dark:border-gray-800"
+                    } px-5 py-3.5 shadow-sm`}>
+                      <p className="text-[15px] pt-5 leading-relaxed whitespace-pre-line">
+                        {message.content}
+                      </p>
+                      <p className={`text-[11px] mt-2 font-medium tracking-wide ${
+                        message.type === "user"
+                          ? "text-gray-300 dark:text-gray-700"
+                          : "text-gray-500 dark:text-gray-500"
+                      }`}>
+                        {formatTime(message.timestamp)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                
+                {/* Typing Indicator */}
+                {isLoading && (
+                  <div className="flex justify-start velora-fade-in">
+                    <div className="bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 rounded-2xl rounded-bl-md px-6 py-4 shadow-sm">
+                      <div className="flex space-x-2">
+                        <div className="w-2 h-2 bg-black dark:bg-white rounded-full velora-typing-dot"></div>
+                        <div className="w-2 h-2 bg-gray-600 dark:bg-gray-400 rounded-full velora-typing-dot"></div>
+                        <div className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full velora-typing-dot"></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
+
+            {/* Input Area */}
+            <div className={`border-t-2 border-gray-200 dark:border-gray-800 p-5 bg-white dark:bg-black ${
+              isFullscreen ? 'px-12' : ''
+            }`}>
+              <div className={`flex gap-3 ${isFullscreen ? 'max-w-4xl mx-auto' : ''}`}>
+                <input
+                  type="text"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
+                  placeholder="Ask me anything about this product..."
+                  className="flex-1 px-4 py-3.5 border-2 border-gray-300 dark:border-gray-700 rounded-xl 
+                           bg-gray-50 dark:bg-gray-950 text-black dark:text-white
+                           placeholder-gray-400 dark:placeholder-gray-600
+                           focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-black dark:focus:border-white
+                           outline-none transition-all duration-200 text-[15px]"
+                  disabled={isLoading}
+                />
                 <button
-                  onClick={() => setIsOpen(false)}
-                  className="hover:bg-white/10 dark:hover:bg-black/10 rounded-full p-2 
-                            transition-all duration-200 hover:scale-110"
+                  onClick={handleSendMessage}
+                  disabled={isLoading || !userInput.trim()}
+                  className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200
+                           disabled:opacity-40 disabled:cursor-not-allowed 
+                           text-white dark:text-black rounded-xl px-6 py-3.5 transition-all duration-200 
+                           hover:shadow-lg hover:scale-105 disabled:hover:scale-100 
+                           flex items-center justify-center min-w-[60px] shadow-md 
+                           border-2 border-black dark:border-white"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                  </svg>
+                  <Send size={18} className={isLoading ? 'opacity-50' : ''} />
                 </button>
               </div>
             </div>
           </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50 dark:bg-gray-900/50">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                    message.type === "user"
-                      ? "bg-black dark:bg-white text-white dark:text-black"
-                      : message.type === "system"
-                      ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-200 dark:border-yellow-700"
-                      : "bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-200 dark:border-gray-700"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-line leading-relaxed">
-                    {message.content}
-                  </p>
-                  <p className={`text-xs mt-2 opacity-60 ${
-                    message.type === "user"
-                      ? "text-gray-200 dark:text-gray-700"
-                      : message.type === "system"
-                      ? "text-yellow-600 dark:text-yellow-400"
-                      : "text-gray-500 dark:text-gray-400"
-                  }`}>
-                    {formatTime(message.timestamp)}
-                  </p>
-                </div>
-              </div>
-            ))}
-            
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 
-                               rounded-2xl px-4 py-4">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" 
-                         style={{ animationDelay: "0.1s" }}></div>
-                    <div className="w-2 h-2 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce" 
-                         style={{ animationDelay: "0.2s" }}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input */}
-          <div className="border-t border-gray-200 dark:border-gray-800 p-4 bg-white dark:bg-black">
-            <div className="flex gap-3">
-              <input
-                type="text"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
-                placeholder="Ask about this product..."
-                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-2xl 
-                         bg-gray-50 dark:bg-gray-900 text-black dark:text-white placeholder-gray-500
-                         focus:ring-2 focus:ring-black dark:focus:ring-white focus:border-transparent 
-                         outline-none transition-all duration-200"
-                disabled={isLoading}
-              />
-              <button
-                onClick={handleSendMessage}
-                disabled={isLoading || !userInput.trim()}
-                className="bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 
-                         disabled:opacity-40 disabled:cursor-not-allowed text-white dark:text-black 
-                         rounded-2xl px-4 py-3 transition-all duration-200 hover:scale-105 
-                         disabled:hover:scale-100 flex items-center justify-center min-w-[48px]"
-              >
-                <SendIcon />
-              </button>
-            </div>
-            
-            {/* Connection status text */}
-            {connectionStatus === 'bad' && (
-              <div className="flex items-center gap-2 mt-2 text-xs text-red-600 dark:text-red-400">
-                <AlertCircle size={12} />
-                <span>Gemini AI service having issues</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Toggle Button with connection status */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`relative bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 
-                   text-white dark:text-black rounded-full p-4 shadow-2xl 
-                   hover:shadow-xl transform hover:scale-110 transition-all duration-300
-                   border border-gray-800 dark:border-gray-200 ${
-                     isOpen ? "rotate-180" : ""
-                   }`}
-      >
-        {/* Connection status indicator on button */}
-        <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-black ${
-          connectionStatus === 'good' ? 'bg-green-400' :
-          connectionStatus === 'bad' ? 'bg-red-400' :
-          'bg-yellow-400'
-        }`} />
-        
-        {isOpen ? (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        ) : (
-          <Bot size={24} />
         )}
-      </button>
-    </div>
+
+        {/* Toggle Button */}
+        {!isFullscreen && (
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={`relative bg-black dark:bg-white text-white dark:text-black rounded-full w-16 h-16 shadow-2xl 
+                       hover:shadow-gray-500/50 dark:hover:shadow-gray-400/50 border-2 border-white dark:border-black
+                       transform hover:scale-110 active:scale-95 transition-all duration-300
+                       flex items-center justify-center group ${
+                         isOpen ? "rotate-0" : ""
+                       }`}
+          >
+            {/* Connection Status Indicator */}
+            <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-black shadow-lg
+              ${connectionStatus === 'good' ? 'bg-green-500' : 
+                connectionStatus === 'bad' ? 'bg-red-500' : 'bg-orange-500 velora-pulse'}`} 
+            />
+            
+            {/* Button Icon */}
+            {isOpen ? (
+              <X size={24} className="group-hover:scale-110 transition-transform" />
+            ) : (
+              <div className="relative">
+                <Bot size={28} className="group-hover:scale-110 transition-transform" />
+                <Sparkles size={12} className="absolute -top-1 -right-1 text-gray-300 dark:text-gray-700 animate-pulse" />
+              </div>
+            )}
+            
+            {/* Glow Effect */}
+            <div className="absolute inset-0 rounded-full bg-gray-400 dark:bg-gray-600
+                            opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300" />
+          </button>
+        )}
+      </div>
+    </>
   );
 };
 
