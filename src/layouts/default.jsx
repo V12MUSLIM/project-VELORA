@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Navbar } from "../components/navbar.jsx";
+import Footer from "../components/footer.jsx";
 
 export default function DefaultLayout({ children }) {
   const { pathname } = useLocation();
@@ -15,7 +16,7 @@ export default function DefaultLayout({ children }) {
       <main className="container mx-auto max-w-7xl px-6 flex-grow pt-16">
         {children}
       </main>
-      <footer className="w-full flex items-center justify-center py-3" />
+      <Footer />
     </div>
   );
 }
