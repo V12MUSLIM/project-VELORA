@@ -3,203 +3,178 @@ import { useProducts } from "../contexts/productContext";
 import ProductCard from "../components/ProductCard.jsx";
 import { useMemo, useState } from "react";
 import {
-  Flame,
-  Star,
+  Grid3x3,
   Laptop,
   Headphones,
   Monitor,
   Tablet,
-  Keyboard,
   Cpu,
   HardDrive,
-  Smartphone,
-  BookOpen,
+  Flame,
+  Star,
+  BadgePercent,
 } from "lucide-react";
 
-const CATEGORY_MAP = {
-  computers: ["computer", "computers", "pc", "laptop"],
-  audio: ["audio", "headphone", "headphones"],
-  tvs: ["tv", "tvs"],
-  tablets: ["tablet", "tablets", "ipad"],
-  accessories: ["accessories"],
-  peripherals: ["peripherals", "keyboard", "mouse"],
-  components: ["components", "component", "hardware"],
-  storage: ["storage", "ssd", "hdd", "storg"],
-  smartphones: ["smartphone", "phone", "mobile"],
-  ereaders: ["e-reader", "ereaders", "kindle"],
-  monitors: ["monitor", "monitors", "display"],
-};
+const getDiscountPercent = (product) =>
+  Math.round(
+    ((product.originalPrice - product.price) /
+      product.originalPrice) *
+      100
+  );
+
+function DealsSection({ title, products, icon }) {
+  const [showAll, setShowAll] = useState(false);
+
+  if (products.length === 0) return null;
+
+  const visibleProducts = showAll ? products : products.slice(0, 4);
+
+  return (
+    <section className="w-full px-4 md:px-6 pb-16">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-black dark:text-white">
+          {icon}
+          {title}
+        </h2>
+
+        {products.length > 4 && (
+          <button
+            onClick={() => setShowAll(!showAll)}
+            className="text-sm text-gray-600 dark:text-gray-400 hover:underline"
+          >
+            {showAll ? "Show less" : "Show more"}
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {visibleProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default function DealsPage() {
   const { products, loading } = useProducts();
   const [activeCategory, setActiveCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("discount");
 
   const deals = useMemo(() => {
     return products.filter(
-      (p) => p.originalPrice > p.price
+      (p) =>
+        p.originalPrice &&
+        p.price &&
+        p.originalPrice > p.price
     );
   }, [products]);
 
-  const featuredDeals = useMemo(() => {
-    return [...deals]
-      .sort(
-        (a, b) =>
-          (b.originalPrice - b.price) -
-          (a.originalPrice - a.price)
-      )
-      .slice(0, 4);
-  }, [deals]);
+  const categoryDeals = useMemo(() => {
+    if (activeCategory === "all") return deals;
 
-  const filteredDeals = useMemo(() => {
-    let list = deals;
+    return deals.filter(
+      (p) =>
+        p.category &&
+        p.category.toLowerCase().trim() === activeCategory
+    );
+  }, [activeCategory, deals]);
 
-    if (activeCategory !== "all") {
-      list = deals.filter((p) => {
-        const cat = p.category?.toLowerCase().trim();
-        if (!cat) return false;
+  const withDiscount = (list) =>
+    list.map((p) => ({
+      ...p,
+      discountPercent: getDiscountPercent(p),
+    }));
 
-        return CATEGORY_MAP[activeCategory]?.some((key) =>
-          cat.includes(key)
-        );
-      });
-    }
+  const megaDeals = useMemo(
+    () => withDiscount(categoryDeals.filter((p) => getDiscountPercent(p) >= 30)),
+    [categoryDeals]
+  );
 
-    if (sortBy === "discount") {
-      list = [...list].sort(
-        (a, b) =>
-          (b.originalPrice - b.price) -
-          (a.originalPrice - a.price)
-      );
-    }
+  const hotDeals = useMemo(
+    () =>
+      withDiscount(
+        categoryDeals.filter(
+          (p) => getDiscountPercent(p) >= 15 && getDiscountPercent(p) < 30
+        )
+      ),
+    [categoryDeals]
+  );
 
-    if (sortBy === "price") {
-      list = [...list].sort((a, b) => a.price - b.price);
-    }
-
-    return list;
-  }, [activeCategory, deals, sortBy]);
+  const smartDeals = useMemo(
+    () =>
+      withDiscount(
+        categoryDeals.filter(
+          (p) => getDiscountPercent(p) >= 5 && getDiscountPercent(p) < 15
+        )
+      ),
+    [categoryDeals]
+  );
 
   return (
     <DefaultLayout>
-      <section className="w-full py-16 text-center bg-gradient-to-b from-gray-100 to-transparent dark:from-zinc-900">
-        <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white">
-          Deals That Matter
+      <section className="w-full py-10 text-center">
+        <h1 className="text-4xl font-bold text-black dark:text-white">
+          Deals
         </h1>
-        <p className="mt-4 text-gray-600 dark:text-gray-400">
-          Smart savings on products you actually want
+        <p className="mt-2 text-gray-600 dark:text-gray-400">
+          Discover the best discounts available now
         </p>
       </section>
 
-      {featuredDeals.length > 0 && (
-        <section className="w-full px-4 md:px-6 pb-16">
-          <h2 className="flex items-center gap-2 text-xl font-semibold mb-6">
-            <Star size={18} />
-            Featured Deals
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredDeals.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={{
-                  ...product,
-                  discountPercent: Math.round(
-                    ((product.originalPrice - product.price) /
-                      product.originalPrice) *
-                    100
-                  ),
-                }}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section className="w-full px-4 md:px-6 pb-8 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex gap-3 overflow-x-auto">
+      {/* Category Bar */}
+      <section className="w-full px-4 md:px-6 pb-8">
+        <div className="flex flex-wrap gap-3">
           {[
-            ["all", "All Deals", Flame],
+            ["all", "All", Grid3x3],
             ["computers", "Computers", Laptop],
             ["audio", "Audio", Headphones],
             ["tvs", "TVs", Monitor],
             ["tablets", "Tablets", Tablet],
-            ["accessories", "Accessories", Keyboard],
-            ["peripherals", "Peripherals", Keyboard],
             ["components", "Components", Cpu],
             ["storage", "Storage", HardDrive],
-            ["smartphones", "Smartphones", Smartphone],
-            ["monitors", "Monitors", Monitor],
-            ["ereaders", "E-Readers", BookOpen],
           ].map(([key, label, Icon]) => (
             <button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className={`flex items-center gap-2 px-5 py-2 rounded-full border whitespace-nowrap
-                ${activeCategory === key
-                  ? "border-black text-black dark:border-white dark:text-white"
-                  : "border-gray-300 text-gray-600 dark:border-zinc-700 dark:text-gray-400"
+              className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all
+                ${
+                  activeCategory === key
+                    ? "bg-black text-white dark:bg-white dark:text-black"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-zinc-900 dark:text-gray-400 dark:hover:bg-zinc-800"
                 }`}
             >
-              <Icon size={16} />
+              <Icon size={18} />
               {label}
             </button>
           ))}
         </div>
-
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="
-    px-4 py-2 rounded-lg text-sm font-medium
-    bg-white dark:bg-zinc-900
-    text-gray-900 dark:text-gray-200
-    border border-gray-300 dark:border-zinc-700
-    focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white
-    transition-colors
-  "
-        >
-          <option value="discount" className="bg-white dark:bg-zinc-900">
-            Highest Discount
-          </option>
-          <option value="price" className="bg-white dark:bg-zinc-900">
-            Lowest Price
-          </option>
-        </select>
       </section>
 
-      <section className="w-full px-4 md:px-6 pb-20">
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-72 rounded-xl bg-gray-200 dark:bg-zinc-800 animate-pulse"
-              />
-            ))}
-          </div>
-        ) : filteredDeals.length === 0 ? (
-          <p className="text-center text-gray-500 mt-10">
-            No deals available
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredDeals.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={{
-                  ...product,
-                  discountPercent: Math.round(
-                    ((product.originalPrice - product.price) /
-                      product.originalPrice) *
-                    100
-                  ),
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </section>
+      {loading ? (
+        <p className="text-center text-gray-500 mt-20">
+          Loading deals...
+        </p>
+      ) : (
+        <>
+          {/* <DealsSection
+            title="Mega Deals (30%+)"
+            products={megaDeals}
+            icon={<Flame size={20} />}
+          /> */}
+
+          <DealsSection
+            title="Hot Deals (15–29%)"
+            products={hotDeals}
+            icon={<Star size={20} />}
+          />
+
+          <DealsSection
+            title="Smart Deals (5–14%)"
+            products={smartDeals}
+            icon={<BadgePercent size={20} />}
+          />
+        </>
+      )}
     </DefaultLayout>
   );
 }

@@ -19,6 +19,7 @@ export default function ProductCard({ product }) {
     reviews,
     inStock,
     isFavorited = false,
+    discountPercent,
   } = product;
 
   const [favorited, setFavorited] = useState(isFavorited);
@@ -77,6 +78,14 @@ export default function ProductCard({ product }) {
         {/* Image Section */}
         <CardHeader className="p-0 relative">
           <div className="relative w-full aspect-square overflow-hidden bg-gray-100 dark:bg-zinc-900">
+            
+             {/* Discount Badge */}
+            {discountPercent > 0 && (
+              <div className="absolute top-3 left-3 z-20 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+                -{discountPercent}%
+              </div>
+            )}
+            
             <Image
               src={image}
               alt={name}
@@ -103,9 +112,8 @@ export default function ProductCard({ product }) {
               }
             >
               <Heart
-                className={`w-4 h-4 text-red-500 dark:text-red-400 transition-colors ${
-                  favorited ? "fill-current" : "fill-none"
-                }`}
+                className={`w-4 h-4 text-red-500 dark:text-red-400 transition-colors ${favorited ? "fill-current" : "fill-none"
+                  }`}
               />
             </Button>
 
@@ -140,11 +148,10 @@ export default function ProductCard({ product }) {
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-3 h-3 ${
-                      i < Math.floor(rating || 0)
+                    className={`w-3 h-3 ${i < Math.floor(rating || 0)
                         ? "text-yellow-400 fill-current"
                         : "text-gray-300 dark:text-zinc-600"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -190,13 +197,12 @@ export default function ProductCard({ product }) {
       {/* Add to Cart Button - Outside the link */}
       <div className="px-4 pb-4">
         <Button
-          className={`w-full font-medium transition-all duration-300 ${
-            inStock
+          className={`w-full font-medium transition-all duration-300 ${inStock
               ? addedToCart
                 ? "bg-green-500 text-white"
                 : "bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-zinc-100 data-[pressed=true]:bg-gray-700 dark:data-[pressed=true]:bg-zinc-200"
               : "bg-gray-100 dark:bg-zinc-900 text-gray-400 dark:text-zinc-500"
-          }`}
+            }`}
           variant={inStock ? "solid" : "flat"}
           isDisabled={!inStock}
           onPress={handleAddToCart}
