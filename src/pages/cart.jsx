@@ -100,12 +100,12 @@ export default function Cart() {
                                                 <div>
                                                     <div className="flex justify-between items-start mb-2">
                                                         <div>
-                                                            <span className="text-xs font-semibold text-blue-600 dark:text-yellow-400 tracking-wider">
+                                                            <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 tracking-wider">
                                                                 {item.category}
                                                             </span>
                                                             <h3 className="text-base sm:text-lg font-semibold mt-1">{item.name}</h3>
                                                         </div>
-                                                        <button onClick={() => removeFromCart(item.id)} className="text-gray-400 hover:text-red-500 dark:text-gray-500 p-1">
+                                                        <button onClick={() => removeFromCart(item.id)} className="text-white-400 hover:text-blue-600 dark:text-white-500 p-1">
                                                             <Trash2 className="w-5 h-5" />
                                                         </button>
                                                     </div>
@@ -142,7 +142,7 @@ export default function Cart() {
                             </div>
                             <div className="bg-white dark:bg-black rounded-xl p-4 sm:p-6 border border-gray-200 dark:border-gray-800">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <Tag className="w-5 h-5 text-blue-600 dark:text-yellow-400" />
+                                    <Tag className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                     <h3 className="font-semibold">Have a promo code?</h3>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-3">
