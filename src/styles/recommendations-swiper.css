@@ -1,0 +1,115 @@
+/* Swiper Custom Styles for Recommendations */
+
+.recommendations-swiper {
+  padding: 0 0 60px 0 !important;
+  position: relative;
+}
+
+/* Navigation Buttons */
+.recommendations-swiper .swiper-button-next,
+.recommendations-swiper .swiper-button-prev {
+  width: 46px;
+  height: 46px;
+  padding: 5px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+
+
+.recommendations-swiper .swiper-button-next:hover,
+.recommendations-swiper .swiper-button-prev:hover {
+  transform: scale(1.1);
+}
+
+
+
+.recommendations-swiper .swiper-button-next::after,
+.recommendations-swiper .swiper-button-prev::after {
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+}
+
+.dark .recommendations-swiper .swiper-button-next::after,
+.dark .recommendations-swiper .swiper-button-prev::after {
+  color: white;
+}
+
+/* Pagination Dots - FIXED POSITIONING */
+.recommendations-swiper .swiper-pagination {
+  bottom: 10px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  position: absolute !important;
+  text-align: center;
+  z-index: 10;
+}
+
+.recommendations-swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: #d1d5db;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  margin: 0 4px !important;
+}
+
+.dark .recommendations-swiper .swiper-pagination-bullet {
+  background: #9ca3af;
+}
+
+.recommendations-swiper .swiper-pagination-bullet-active {
+  background: black;
+  width: 20px;
+  border-radius: 4px;
+  opacity: 1;
+}
+
+.dark .recommendations-swiper .swiper-pagination-bullet-active {
+  background: white;
+}
+
+/* Dynamic bullets - side bullets are smaller */
+.recommendations-swiper .swiper-pagination-bullet-active-prev,
+.recommendations-swiper .swiper-pagination-bullet-active-next {
+  width: 10px;
+  opacity: 0.7;
+}
+
+.recommendations-swiper .swiper-pagination-bullet-active-prev-prev,
+.recommendations-swiper .swiper-pagination-bullet-active-next-next {
+  width: 8px;
+  opacity: 0.5;
+}
+
+/* Disabled state */
+.recommendations-swiper .swiper-button-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .recommendations-swiper {
+    padding: 0 0 50px 0 !important;
+  }
+  
+  .recommendations-swiper .swiper-button-next,
+  .recommendations-swiper .swiper-button-prev {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .recommendations-swiper .swiper-button-next::after,
+  .recommendations-swiper .swiper-button-prev::after {
+    font-size: 16px;
+  }
+  
+  .recommendations-swiper .swiper-pagination {
+    bottom: 5px !important;
+  }
+}

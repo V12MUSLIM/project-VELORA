@@ -41,12 +41,12 @@ export const siteConfig = {
       href: "/best-sellers",
     },
     {
-      label: "Sale",
-      href: "/sale",
+      label: "Deals",
+      href: "/deals",
     },
     {
       label: "My Orders",
-      href: "/orders",
+      href: "/cart",
     },
     {
       label: "Wishlist",

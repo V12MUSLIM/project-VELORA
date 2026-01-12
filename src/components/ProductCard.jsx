@@ -194,8 +194,8 @@ export default function ProductCard({ product }) {
             inStock
               ? addedToCart
                 ? "bg-green-500 text-white"
-                : "bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-zinc-100 data-[pressed=true]:bg-gray-700 dark:data-[pressed=true]:bg-zinc-200"
-              : "bg-gray-100 dark:bg-zinc-900 text-gray-400 dark:text-zinc-500"
+                : "bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-zinc-100 data-[pressed=true]:bg-gray-700 dark:data-[pressed=true]:bg-zinc-200"
+              : "dark:bg-gray-100 bg-black text-gray-400 dark:text-zinc-500"
           }`}
           variant={inStock ? "solid" : "flat"}
           isDisabled={!inStock}

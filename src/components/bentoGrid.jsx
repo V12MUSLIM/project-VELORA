@@ -6,60 +6,70 @@ const BentoGrid = () => {
       name: "Phone",
       image: `${import.meta.env.BASE_URL}phone.jpeg`,
       gridClass: "md:col-span-1 md:row-span-2",
+      url: "/category/Smartphones",
     },
     {
       id: "gpu",
       name: "GPU",
       image: `${import.meta.env.BASE_URL}gpu.jpeg`,
       gridClass: "md:col-span-2 md:row-span-1",
+      url: "/category/Components",
     },
     {
       id: "laptop",
       name: "Laptop",
       image: `${import.meta.env.BASE_URL}laptop.jpeg`,
       gridClass: "md:col-span-2 md:row-span-2",
+      url: "/category/Computers",
     },
     {
       id: "tablet",
       name: "Tablet",
       image: `${import.meta.env.BASE_URL}tablet.jpeg`,
       gridClass: "md:col-span-1 md:row-span-1",
+      url: "/category/Tablets",
     },
     {
       id: "headset",
       name: "Headset",
       image: `${import.meta.env.BASE_URL}headset.jpeg`,
       gridClass: "md:col-span-1 md:row-span-1",
+      url: "/category/Audio",
     },
     {
       id: "drone",
       name: "Drone",
       image: `${import.meta.env.BASE_URL}drone.jpeg`,
       gridClass: "md:col-span-1 md:row-span-1",
+      url: "/category/Drones",
     },
     {
       id: "watch",
       name: "Watch",
       image: `${import.meta.env.BASE_URL}watch.jpeg`,
       gridClass: "md:col-span-1 md:row-span-1",
+      url: "/category/Wearables",
     },
     {
       id: "tv",
       name: "TV",
       image: `${import.meta.env.BASE_URL}tv.jpeg`,
       gridClass: "md:col-span-1 md:row-span-1",
+      url: "/category/TVs",
     },
     {
       id: "tower",
       name: "Tower",
       image: `${import.meta.env.BASE_URL}tower.jpeg`,
       gridClass: "md:col-span-1 md:row-span-1",
+      url: "/category/Gaming",
     },
     {
       id: "vr",
       name: "VR",
       image: `${import.meta.env.BASE_URL}vr.jpeg`,
       gridClass: "md:col-span-1 md:row-span-1",
+      url: "/category/VR/AR",
     },
   ];
 
@@ -84,32 +94,34 @@ const BentoGrid = () => {
               key={device.id}
               className={`${device.gridClass} group relative overflow-hidden cursor-pointer`}
             >
-              {/* Image Container */}
-              <div className="relative w-full h-full overflow-hidden bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all duration-700 ease-out">
-                <img
-                  src={device.image}
-                  alt={device.name}
-                  className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-105 filter grayscale group-hover:grayscale-0"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null; // prevent infinite loop
-                    e.currentTarget.src = `${import.meta.env.BASE_URL}no-image.jpeg`; // fallback stored in public/no-image.jpeg
-                  }}
-                />
+              <Link to={device.url}>
+                {/* Image Container */}
+                <div className="relative w-full h-full overflow-hidden bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 hover:border-black dark:hover:border-white transition-all duration-700 ease-out">
+                  <img
+                    src={device.image}
+                    alt={device.name}
+                    className="w-full h-full object-cover transition-all duration-1000 ease-out group-hover:scale-105 filter grayscale group-hover:grayscale-0"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null; // prevent infinite loop
+                      e.currentTarget.src = `${import.meta.env.BASE_URL}no-image.jpeg`; // fallback stored in public/no-image.jpeg
+                    }}
+                  />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-                {/* Minimalist Label */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-                  <div className="text-center transform translate-y-6 group-hover:translate-y-0 transition-transform duration-700 ease-out">
-                    <div className="w-px h-6 sm:h-8 bg-white mx-auto mb-3 sm:mb-4 opacity-60"></div>
-                    <h3 className="text-white text-sm sm:text-lg font-light tracking-[0.2em] sm:tracking-[0.3em] uppercase">
-                      {device.name}
-                    </h3>
-                    <div className="w-px h-6 sm:h-8 bg-white mx-auto mt-3 sm:mt-4 opacity-60"></div>
+                  {/* Minimalist Label */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+                    <div className="text-center transform translate-y-6 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                      <div className="w-px h-6 sm:h-8 bg-white mx-auto mb-3 sm:mb-4 opacity-60"></div>
+                      <h3 className="text-white text-sm sm:text-lg font-light tracking-[0.2em] sm:tracking-[0.3em] uppercase">
+                        {device.name}
+                      </h3>
+                      <div className="w-px h-6 sm:h-8 bg-white mx-auto mt-3 sm:mt-4 opacity-60"></div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           ))}
         </div>
