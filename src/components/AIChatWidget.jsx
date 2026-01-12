@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Bot, Send, X, Maximize2, Sparkles } from 'lucide-react';
-import { askGeminiAboutProduct, testGeminiConnection } from '../gemini';
+import { Bot, Send, X, Maximize2, Sparkles, User } from 'lucide-react';
+import { askGeminiAboutProduct, testGeminiConnection } from '../groq';
 
 const AIChatWidget = ({ product, className = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -244,25 +244,33 @@ const AIChatWidget = ({ product, className = "" }) => {
             </div>
 
             {/* Messages */}
-            <div className={`flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50 dark:bg-gray-950 velora-scrollbar ${
+            <div className={`flex-1 overflow-y-auto p-6 space-y-2 bg-gray-50 dark:bg-gray-950 velora-scrollbar ${
               isFullscreen ? 'px-12' : ''
             }`}>
               <div className={isFullscreen ? 'max-w-4xl mx-auto' : ''}>
                 {messages.map((message, index) => (
                   <div
                     key={message.id}
-                    className={`flex ${message.type === "user" ? "justify-end" : "justify-start"} velora-message-bubble`}
+                    className={`flex ${message.type === "user" ? "justify-end" : "justify-start"} items-end gap-2 mb-1 velora-message-bubble`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    <div className={`max-w-[80%] ${
+                    {/* AI Avatar - Left side */}
+                    {message.type === "ai" && (
+                      <div className="w-7 h-7 rounded-full bg-black dark:bg-white flex items-center justify-center flex-shrink-0 mb-1 border border-gray-200 dark:border-gray-800">
+                        <span className="text-white dark:text-black font-bold text-xs">V</span>
+                      </div>
+                    )}
+                    
+                    {/* Message Bubble */}
+                    <div className={`max-w-[75%] ${
                       message.type === "user"
-                        ? "bg-black dark:bg-white text-white dark:text-black rounded-2xl rounded-br-md border-2 border-black dark:border-white"
-                        : "bg-white dark:bg-black text-black dark:text-white rounded-2xl rounded-bl-md border-2 border-gray-200 dark:border-gray-800"
-                    } px-5 py-3.5 shadow-sm`}>
-                      <p className="text-[15px] pt-5 leading-relaxed whitespace-pre-line">
+                        ? "bg-black dark:bg-white text-white dark:text-black rounded-[22px] rounded-br-[4px]"
+                        : "bg-white dark:bg-black text-black dark:text-white rounded-[22px] rounded-bl-[4px] border border-gray-200 dark:border-gray-800"
+                    } px-4 py-2.5 shadow-sm`}>
+                      <p className="text-[15px] leading-relaxed whitespace-pre-line">
                         {message.content}
                       </p>
-                      <p className={`text-[11px] mt-2 font-medium tracking-wide ${
+                      <p className={`text-[10px] mt-1 font-medium tracking-wide ${
                         message.type === "user"
                           ? "text-gray-300 dark:text-gray-700"
                           : "text-gray-500 dark:text-gray-500"
@@ -270,13 +278,29 @@ const AIChatWidget = ({ product, className = "" }) => {
                         {formatTime(message.timestamp)}
                       </p>
                     </div>
+                    
+                    {/* User Avatar - Right side */}
+                    {message.type === "user" && (
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 mb-1 border-2 border-white dark:border-gray-900 overflow-hidden">
+                        <img 
+                          src="https://i.pravatar.cc/150?u=a042581f4e29026024d" 
+                          alt="User" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
                 
                 {/* Typing Indicator */}
                 {isLoading && (
-                  <div className="flex justify-start velora-fade-in">
-                    <div className="bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 rounded-2xl rounded-bl-md px-6 py-4 shadow-sm">
+                  <div className="flex justify-start items-end gap-2 mb-1 velora-fade-in">
+                    {/* AI Avatar */}
+                    <div className="w-7 h-7 rounded-full bg-black dark:bg-white flex items-center justify-center flex-shrink-0 mb-1 border border-gray-200 dark:border-gray-800">
+                      <span className="text-white dark:text-black font-bold text-xs">V</span>
+                    </div>
+                    {/* Typing Bubble */}
+                    <div className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-[22px] rounded-bl-[4px] px-5 py-3 shadow-sm">
                       <div className="flex space-x-2">
                         <div className="w-2 h-2 bg-black dark:bg-white rounded-full velora-typing-dot"></div>
                         <div className="w-2 h-2 bg-gray-600 dark:bg-gray-400 rounded-full velora-typing-dot"></div>

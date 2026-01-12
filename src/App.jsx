@@ -10,7 +10,6 @@ import ProductDetails from "./pages/productDetails.jsx";
 import Cart from "./pages/cart.jsx";
 import NotFoundPage from "./pages/notFound.jsx";
 import { ToastProvider } from "@heroui/react";
-
 import CategoryPage from "./components/cateegoryProduct.jsx"; // You'll need to create this file
 
 // Wrapper component to extract category from URL params
