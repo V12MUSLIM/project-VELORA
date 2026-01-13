@@ -9,7 +9,6 @@ import BentoGrid from "../components/bentoGrid.jsx";
 import DefaultLayout from "../layouts/default.jsx";
 import { useProducts } from "../contexts/productContext.jsx";
 
-// Animation variants
 const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
   visible: {
@@ -296,212 +295,130 @@ export default function IndexPage() {
         </motion.div>
       </motion.section>
 
-      {/* Categories Grid */}
       <motion.section
-        ref={categoriesRef}
-        className="py-32 "
-        initial="hidden"
-        animate={categoriesInView ? "visible" : "hidden"}
-      >
-        <motion.div
-          className="container mx-auto px-6"
-          variants={staggerContainer}
-        >
-          <motion.div className="text-center mb-16" variants={fadeInDown}>
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight font-playfair">
-              Explore by Category
-            </h2>
-            <p className="text-xl text-foreground/60 max-w-2xl mx-auto font-light">
-              Discover our carefully curated collections across premium
-              categories
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-            variants={staggerContainer}
-          >
-            {categories.map((category, index) => (
-              <motion.div key={category.name} variants={scaleIn}>
-                <Card
-                  as={Link}
-                  href={`/categories?category=${category.name}`}
-                  className="group cursor-pointer overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500"
-                  isPressable
-                >
-                  <CardBody className="p-0 relative">
-                    <motion.div
-                      className="aspect-square overflow-hidden relative"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <img
-                        alt={category.name}
-                        className="w-full h-full object-cover"
-                        src={category.image}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                      <div className="absolute bottom-6 left-6 right-6">
-                        <h3 className="text-2xl font-bold text-white mb-1">
-                          {category.name}
-                        </h3>
-                        <p className="text-white/70 text-sm mb-2">
-                          {category.description}
-                        </p>
-                        <p className="text-white/50 text-xs uppercase tracking-wider">
-                          {category.count}
-                        </p>
-                      </div>
-                    </motion.div>
-                  </CardBody>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div className="text-center mt-12" variants={fadeInUp}>
-            <Button
-              as={Link}
-              className="border-foreground text-foreground hover:bg-foreground hover:text-background px-8 py-3 font-medium transition-all duration-300"
-              href="/categories"
-              size="lg"
-              variant="bordered"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              View All Categories
-            </Button>
-          </motion.div>
-        </motion.div>
-      </motion.section>
-
-      {/* Brand Story Preview */}
- <motion.section
-  ref={storyRef}
-  className="
+        ref={storyRef}
+        className="
     py-32
     rounded-xl text-background
     overflow-hidden relative
   "
-  initial="hidden"
-  animate={storyInView ? 'visible' : 'hidden'}
->
-  {/* BLURRED BACKGROUND IMAGE */}
-  <div className="absolute inset-0 -z-10">
-    <div
-      className="
+        initial="hidden"
+        animate={storyInView ? "visible" : "hidden"}
+      >
+        <div className="absolute inset-0 -z-10">
+          <div
+            className="
         w-full h-full
         bg-[url('background.png')] dark:bg-[url('light.png')]
         bg-cover bg-center
         blur-sm scale-110
       "
-    />
-  </div>
-
-  {/* EXISTING DECORATION */}
- 
-
-  {/* CONTENT */}
-  <motion.div
-    className="container mx-auto px-6 relative z-10"
-    variants={staggerContainer}
-  >
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-      <motion.div variants={slideInLeft}>
-        <motion.div
-          className="inline-block mb-6 px-6 py-2 bg-background/10 backdrop-blur-sm rounded-full"
-          whileHover={{ scale: 1.05 }}
-        >
-          <span className="text-sm font-medium tracking-wider uppercase text-background/70">
-            Our Story
-          </span>
-        </motion.div>
-
-        <h2 className="text-5xl md:text-6xl font-bold mb-8 tracking-tight font-playfair leading-tight">
-          Crafting Excellence Since Day One
-        </h2>
-
-        <p className="text-xl text-background/90 mb-6 leading-relaxed font-semibold">
-          At VELORA, we believe that premium quality shouldn't be a luxury.
-          Every product in our collection is meticulously selected to meet our
-          exacting standards.
-        </p>
-
-        <p className="text-lg text-background/90 mb-8 leading-relaxed font-semibold">
-          From cutting-edge technology to timeless design, we curate only the
-          finest products that enhance your lifestyle and stand the test of time.
-        </p>
-
-        <Button
-          as={Link}
-          className="bg-background text-foreground hover:bg-background/90 px-8 py-3 font-medium transition-all duration-300"
-          href="/about"
-          size="lg"
-          whileHover={{ scale: 1.05, y: -2 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          Learn More About Us
-        </Button>
-      </motion.div>
-
-      <motion.div variants={slideInRight} className="relative">
-        <div className="grid grid-cols-2 gap-4">
-          <motion.div
-            className="space-y-4"
-            initial={{ y: 0 }}
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="tv.jpeg"
-                alt="Product showcase"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="laptop.jpeg"
-                alt="Product showcase"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="space-y-4 pt-8"
-            initial={{ y: 0 }}
-            animate={{ y: [0, 20, 0] }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 0.2,
-            }}
-          >
-            <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="vr.jpeg"
-                alt="Product showcase"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src="mouse.jpg"
-                alt="Product showcase"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </motion.div>
+          />
         </div>
-      </motion.div>
-    </div>
-  </motion.div>
-</motion.section>
 
+        <motion.div
+          className="container mx-auto px-6 relative z-10"
+          variants={staggerContainer}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <motion.div variants={slideInLeft}>
+              <motion.div
+                className="inline-block mb-6 px-6 py-2 bg-background/10 backdrop-blur-sm rounded-full"
+                whileHover={{ scale: 1.05 }}
+              >
+                <span className="text-sm font-medium tracking-wider uppercase text-background/70">
+                  Our Story
+                </span>
+              </motion.div>
 
-      {/* Bento Grid Section */}
+              <h2 className="text-5xl md:text-6xl font-bold mb-8 tracking-tight font-playfair leading-tight">
+                Crafting Excellence Since Day One
+              </h2>
+
+              <p className="text-xl text-background/90 mb-6 leading-relaxed font-semibold">
+                At VELORA, we believe that premium quality shouldn't be a
+                luxury. Every product in our collection is meticulously selected
+                to meet our exacting standards.
+              </p>
+
+              <p className="text-lg text-background/90 mb-8 leading-relaxed font-semibold">
+                From cutting-edge technology to timeless design, we curate only
+                the finest products that enhance your lifestyle and stand the
+                test of time.
+              </p>
+
+              <Button
+                as={Link}
+                className="bg-background text-foreground hover:bg-background/90 px-8 py-3 font-medium transition-all duration-300"
+                href="/about"
+                size="lg"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Learn More About Us
+              </Button>
+            </motion.div>
+
+            <motion.div variants={slideInRight} className="relative">
+              <div className="grid grid-cols-2 gap-4">
+                <motion.div
+                  className="space-y-4"
+                  initial={{ y: 0 }}
+                  animate={{ y: [0, -20, 0] }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                    <img
+                      src="tv.jpeg"
+                      alt="Product showcase"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                    <img
+                      src="laptop.jpeg"
+                      alt="Product showcase"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="space-y-4 pt-8"
+                  initial={{ y: 0 }}
+                  animate={{ y: [0, 20, 0] }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.2,
+                  }}
+                >
+                  <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                    <img
+                      src="vr.jpeg"
+                      alt="Product showcase"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
+                    <img
+                      src="mouse.jpg"
+                      alt="Product showcase"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </motion.section>
+
       <section className="py-32 ">
         <div className="container mx-auto px-6">
           <motion.div
@@ -522,7 +439,6 @@ export default function IndexPage() {
         </div>
       </section>
 
-      {/* Featured Products */}
       <motion.section
         ref={productsRef}
         className="py-32 bg-background"
@@ -612,7 +528,6 @@ export default function IndexPage() {
         </motion.div>
       </motion.section>
 
-      {/* Testimonials Section */}
       <motion.section
         ref={testimonialsRef}
         className="py-32 "
@@ -687,7 +602,6 @@ export default function IndexPage() {
         </motion.div>
       </motion.section>
 
-      {/* Instagram-style Gallery */}
       <motion.section
         ref={galleryRef}
         className="py-32 bg-background"
@@ -754,7 +668,6 @@ export default function IndexPage() {
         </motion.div>
       </motion.section>
 
-      {/* Newsletter Section */}
       <motion.section
         ref={newsletterRef}
         className="py-32 bg-foreground text-background relative rounded-xl overflow-hidden"
@@ -834,7 +747,6 @@ export default function IndexPage() {
         </motion.div>
       </motion.section>
 
-      {/* Brand Values */}
       <motion.section
         ref={valuesRef}
         className="py-32 bg-background"

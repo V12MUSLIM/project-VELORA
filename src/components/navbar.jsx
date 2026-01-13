@@ -60,6 +60,7 @@ export const Navbar = () => {
   );
 
   const avatarComponent = (
+    <Link to="/account">
     <Avatar
       src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
       name="User Avatar"
@@ -72,6 +73,7 @@ export const Navbar = () => {
         console.log("Avatar clicked");
       }}
     />
+    </Link>
   );
 
   return (

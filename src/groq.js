@@ -1,4 +1,3 @@
-
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -18,7 +17,6 @@ async function fetchAI(url, options) {
 
 export async function testGeminiConnection() {
   if (!API_KEY || API_KEY.length < 10) {
-    console.error("❌ Groq API key not configured");
     return { success: false, error: "API key not configured" };
   }
 
@@ -41,7 +39,6 @@ export async function testGeminiConnection() {
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => null);
-      console.error("❌ Groq test failed:", res.status, errorData);
       
       if (res.status === 401 || res.status === 403) {
         return { success: false, error: "Invalid API key" };
@@ -49,10 +46,8 @@ export async function testGeminiConnection() {
       return { success: true }; // Optimistic for other errors
     }
 
-    console.log("✅ Groq connection successful");
     return { success: true };
   } catch (error) {
-    console.error("❌ Groq connection error:", error.message);
     return { success: true }; // Optimistic approach
   }
 }
@@ -90,8 +85,6 @@ export async function askGeminiAboutProduct(product, question, options = {}) {
       top_p: 0.95
     };
 
-    console.log("🚀 Sending request to Groq...");
-
     const res = await fetchAI(API_URL, {
       method: "POST",
       headers: {
@@ -101,13 +94,9 @@ export async function askGeminiAboutProduct(product, question, options = {}) {
       body: JSON.stringify(requestBody)
     });
 
-    console.log("📡 Response status:", res.status);
-
     const result = await res.json();
 
     if (!res.ok) {
-      console.error("❌ Groq API error:", result);
-      
       if (result.error) {
         const errorMessage = result.error.message || "";
         
@@ -139,16 +128,12 @@ export async function askGeminiAboutProduct(product, question, options = {}) {
     const text = result?.choices?.[0]?.message?.content;
     
     if (!text) {
-      console.warn("⚠️ No text in response:", result);
       return "I received an empty response. Please try asking again.";
     }
 
-    console.log("✅ Got response from Groq");
     return cleanResponse(text);
 
   } catch (error) {
-    console.error("❌ Exception:", error);
-    
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       return "Unable to connect to the AI service. Please check your internet connection.";
     }

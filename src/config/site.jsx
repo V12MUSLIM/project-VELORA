@@ -33,14 +33,6 @@ export const siteConfig = {
       href: "/categories",
     },
     {
-      label: "New Arrivals",
-      href: "/new-arrivals",
-    },
-    {
-      label: "Best Sellers",
-      href: "/best-sellers",
-    },
-    {
       label: "Deals",
       href: "/deals",
     },
@@ -56,20 +48,16 @@ export const siteConfig = {
       label: "Account Settings",
       href: "/account",
     },
-    {
-      label: "Customer Support",
-      href: "/support",
+
+       {
+      label: "About",
+      href: "/about",
     },
     {
       label: "Logout",
       href: "/logout",
     },
+ 
   ],
-  links: {
-    github: "https://github.com/frontio-ai/heroui",
-    twitter: "https://twitter.com/velora_store",
-    docs: "https://heroui.com",
-    discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev",
-  },
+
 };
