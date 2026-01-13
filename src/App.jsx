@@ -8,10 +8,13 @@ import Categories from "./pages/Categories.jsx";
 import AboutPage from "./pages/about.jsx";
 import ProductDetails from "./pages/productDetails.jsx";
 import Cart from "./pages/cart.jsx";
+import Wishlist from "./pages/wishlist.jsx";
 import NotFoundPage from "./pages/notFound.jsx";
 import { ToastProvider } from "@heroui/react";
-import CategoryPage from "./components/cateegoryProduct.jsx";
+import CategoryPage from "./components/cateegoryProduct.jsx"; // You'll need to create this file
+import { WishlistProvider } from './contexts/WishlistContext';
 import ProfileSettingsPage from "./pages/AccountSettings.jsx";
+// Wrapper component to extract category from URL params
 function CategoryPageWrapper() {
   const { category } = useParams();
   return <CategoryPage category={decodeURIComponent(category)} />;
@@ -36,6 +39,7 @@ function App() {
       </div>
       <ProductProvider>
         <CartProvider>
+          <WishlistProvider>
           <Routes>
             <Route path="/" element={<IndexPage />} />
             <Route path="/shop" element={<ShopPage />} />
@@ -50,8 +54,10 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/shop/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/wishlist" element={<Wishlist />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          </WishlistProvider>
         </CartProvider>
       </ProductProvider>
     </>

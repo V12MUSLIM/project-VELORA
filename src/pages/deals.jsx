@@ -1,180 +1,131 @@
-import DefaultLayout from "../layouts/default.jsx";
+import DefaultLayout from "../layouts/default";
 import { useProducts } from "../contexts/productContext";
-import ProductCard from "../components/ProductCard.jsx";
-import { useMemo, useState } from "react";
-import {
-  Grid3x3,
-  Laptop,
-  Headphones,
-  Monitor,
-  Tablet,
-  Cpu,
-  HardDrive,
-  Flame,
-  Star,
-  BadgePercent,
-} from "lucide-react";
+import { useCart } from "../contexts/CartContext";
+import { useEffect, useState, useMemo } from "react";
 
-const getDiscountPercent = (product) =>
-  Math.round(
-    ((product.originalPrice - product.price) /
-      product.originalPrice) *
-      100
-  );
+export default function SmartDealsPage() {
+  const { products } = useProducts();
+  const { addToCart } = useCart();
 
-function DealsSection({ title, products, icon }) {
-  const [showAll, setShowAll] = useState(false);
+  const bundleProducts = useMemo(() => products.slice(0, 3), [products]);
+  const [timeLeft, setTimeLeft] = useState(4 * 60 * 60);
 
-  if (products.length === 0) return null;
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((t) => (t > 0 ? t - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
-  const visibleProducts = showAll ? products : products.slice(0, 4);
+  const formatTime = (t) => {
+    const h = String(Math.floor(t / 3600)).padStart(2, "0");
+    const m = String(Math.floor((t % 3600) / 60)).padStart(2, "0");
+    const s = String(t % 60).padStart(2, "0");
+    return `${h}:${m}:${s}`;
+  };
 
-  return (
-    <section className="w-full px-4 md:px-6 pb-16">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="flex items-center gap-2 text-xl font-semibold text-black dark:text-white">
-          {icon}
-          {title}
-        </h2>
-
-        {products.length > 4 && (
-          <button
-            onClick={() => setShowAll(!showAll)}
-            className="text-sm text-gray-600 dark:text-gray-400 hover:underline"
-          >
-            {showAll ? "Show less" : "Show more"}
-          </button>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {visibleProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export default function DealsPage() {
-  const { products, loading } = useProducts();
-  const [activeCategory, setActiveCategory] = useState("all");
-
-  const deals = useMemo(() => {
-    return products.filter(
-      (p) =>
-        p.originalPrice &&
-        p.price &&
-        p.originalPrice > p.price
-    );
-  }, [products]);
-
-  const categoryDeals = useMemo(() => {
-    if (activeCategory === "all") return deals;
-
-    return deals.filter(
-      (p) =>
-        p.category &&
-        p.category.toLowerCase().trim() === activeCategory
-    );
-  }, [activeCategory, deals]);
-
-  const withDiscount = (list) =>
-    list.map((p) => ({
-      ...p,
-      discountPercent: getDiscountPercent(p),
-    }));
-
-  const megaDeals = useMemo(
-    () => withDiscount(categoryDeals.filter((p) => getDiscountPercent(p) >= 30)),
-    [categoryDeals]
-  );
-
-  const hotDeals = useMemo(
-    () =>
-      withDiscount(
-        categoryDeals.filter(
-          (p) => getDiscountPercent(p) >= 15 && getDiscountPercent(p) < 30
-        )
-      ),
-    [categoryDeals]
-  );
-
-  const smartDeals = useMemo(
-    () =>
-      withDiscount(
-        categoryDeals.filter(
-          (p) => getDiscountPercent(p) >= 5 && getDiscountPercent(p) < 15
-        )
-      ),
-    [categoryDeals]
-  );
+  const handleAddBundle = () => {
+    bundleProducts.forEach((p) => addToCart(p, 1));
+  };
 
   return (
     <DefaultLayout>
-      <section className="w-full py-10 text-center">
-        <h1 className="text-4xl font-bold text-black dark:text-white">
-          Deals
-        </h1>
-        <p className="mt-2 text-gray-600 dark:text-gray-400">
-          Discover the best discounts available now
-        </p>
-      </section>
+      {/* HERO BUNDLE */}
+      <section className="min-h-[80vh] bg-black text-white flex items-center">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-      {/* Category Bar */}
-      <section className="w-full px-4 md:px-6 pb-8">
-        <div className="flex flex-wrap gap-3">
-          {[
-            ["all", "All", Grid3x3],
-            ["computers", "Computers", Laptop],
-            ["audio", "Audio", Headphones],
-            ["tvs", "TVs", Monitor],
-            ["tablets", "Tablets", Tablet],
-            ["components", "Components", Cpu],
-            ["storage", "Storage", HardDrive],
-          ].map(([key, label, Icon]) => (
+          {/* IMAGE LEFT */}
+          <div className="flex justify-center">
+            <img
+              src={bundleProducts[0]?.image}
+              alt="Bundle Deal"
+              className="max-h-[420px] object-contain drop-shadow-2xl"
+            />
+          </div>
+
+          {/* CONTENT RIGHT */}
+          <div className="space-y-8">
+            <span className="uppercase tracking-widest text-gray-400 text-sm">
+              Smart Bundle Offer
+            </span>
+
+            <h1 className="text-5xl font-bold leading-tight">
+              Buy More.
+              <br />
+              Save Bigger.
+            </h1>
+
+            <p className="text-gray-300 text-lg max-w-xl">
+              Get <span className="text-white font-semibold">50% OFF</span> when you buy 2 products,
+              and get the <span className="text-white font-semibold">3rd FREE</span>.
+            </p>
+
+            {/* Countdown */}
+            <div className="text-3xl font-mono tracking-wider">
+              {formatTime(timeLeft)}
+            </div>
+
+            {/* Mini Products */}
+            <div className="flex gap-4">
+              {bundleProducts.map((p) => (
+                <div
+                  key={p.id}
+                  className="w-28 h-28 bg-zinc-900 rounded-xl flex items-center justify-center"
+                >
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="max-h-20 object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Rules */}
+            <div className="border border-zinc-800 rounded-xl p-4 space-y-2 text-sm text-gray-300">
+              <p>✔ Buy any 2 products → 10% OFF each</p>
+              <p>✔ Add a 3rd product → FREE</p>
+              <p>✔ Limited time only</p>
+            </div>
+
+            {/* CTA */}
             <button
-              key={key}
-              onClick={() => setActiveCategory(key)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all
-                ${
-                  activeCategory === key
-                    ? "bg-black text-white dark:bg-white dark:text-black"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-zinc-900 dark:text-gray-400 dark:hover:bg-zinc-800"
-                }`}
+              onClick={handleAddBundle}
+              className="px-10 py-4 bg-white text-black rounded-xl font-semibold hover:scale-[0.97] transition"
             >
-              <Icon size={18} />
-              {label}
+              Add Bundle to Cart
             </button>
-          ))}
+          </div>
         </div>
       </section>
 
-      {loading ? (
-        <p className="text-center text-gray-500 mt-20">
-          Loading deals...
-        </p>
-      ) : (
-        <>
-          {/* <DealsSection
-            title="Mega Deals (30%+)"
-            products={megaDeals}
-            icon={<Flame size={20} />}
-          /> */}
+      {/* MORE DEALS */}
+      <section className="px-6 py-20 bg-white dark:bg-black">
+        <h2 className="text-3xl font-semibold text-black dark:text-white mb-10">
+          More Smart Offers
+        </h2>
 
-          <DealsSection
-            title="Hot Deals (15–29%)"
-            products={hotDeals}
-            icon={<Star size={20} />}
-          />
-
-          <DealsSection
-            title="Smart Deals (5–14%)"
-            products={smartDeals}
-            icon={<BadgePercent size={20} />}
-          />
-        </>
-      )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {products.slice(3, 11).map((p) => (
+            <div
+              key={p.id}
+              className="border border-gray-200 dark:border-zinc-800 rounded-xl p-4 hover:shadow-lg transition"
+            >
+              <img
+                src={p.image}
+                alt={p.name}
+                className="h-40 mx-auto object-contain mb-4"
+              />
+              <h3 className="text-sm font-medium text-black dark:text-white line-clamp-2">
+                {p.name}
+              </h3>
+              <p className="mt-2 text-lg font-semibold">
+                ${p.price}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
     </DefaultLayout>
   );
 }
